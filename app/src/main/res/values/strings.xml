@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_launcher_name">Clock</string>
+    <string name="time_separator">:</string>
     <string name="time_zone">Time zone</string>
     <string name="vibrate">Vibrate</string>
     <string name="no_days_selected">No days selected</string>
@@ -31,6 +32,40 @@
     <string name="add_alarm">Add alarm</string>
     <string name="no_timers_found">No timers found</string>
     <string name="add_timer">Add timer</string>
+
+    <!-- Elderly redesign, see docs/elderly-spec -->
+    <string name="add_city">Add City</string>
+    <string name="search_for_a_city">Search for a city</string>
+    <string name="start_timer">Start Timer</string>
+    <string name="stop_timer">Stop Timer</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="lap_number_format">Lap %d</string>
+    <string name="start_stopwatch_elderly">Start Stopwatch</string>
+    <string name="stop_stopwatch">Stop Stopwatch</string>
+    <string name="reset">Reset</string>
+    <string name="add_alarm_elderly">Add Alarm</string>
+    <string name="delete_alarm">Delete Alarm</string>
+    <string name="delete_this_alarm_confirmation">Delete this alarm?</string>
+    <string name="repeat">Repeat</string>
+    <string name="tap_to_select">Tap to select</string>
+    <string name="scroll_to_set_time">Scroll to set time</string>
+    <string name="scroll_to_set_alarm">Scroll to set time and alarm</string>
+    <string name="stop_alarm">Stop Alarm</string>
+    <string name="alarm_schedule_line">%s Alarm</string>
+    <string name="snooze_with_duration">Snooze — %s</string>
+    <string name="times_up">Time\'s up</string>
+    <string name="edit_alarm_action">Edit</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="hour">Hour</string>
+    <string name="minute">Minute</string>
+    <string name="am_pm">AM/PM</string>
+    <string name="second">Second</string>
+    <string-array name="am_pm_values">
+        <item>AM</item>
+        <item>PM</item>
+    </string-array>
     <string name="upcoming_alarm">Upcoming alarm</string>
     <string name="not_scheduled">Not scheduled</string>
     <string name="missed_alarm">Missed alarm</string>

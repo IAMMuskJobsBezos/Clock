@@ -4,47 +4,32 @@ import android.annotation.SuppressLint
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import org.fossify.clock.R
 import org.fossify.clock.activities.SimpleActivity
 import org.fossify.clock.databinding.ItemTimeZoneBinding
-import org.fossify.clock.extensions.config
-import org.fossify.clock.extensions.getFormattedDate
 import org.fossify.clock.extensions.getFormattedTime
 import org.fossify.clock.models.MyTimeZone
 import org.fossify.commons.adapters.MyRecyclerViewAdapter
-import org.fossify.commons.extensions.beGone
-import org.fossify.commons.extensions.beVisible
+import org.fossify.commons.extensions.applyColorFilter
 import org.fossify.commons.views.MyRecyclerView
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
 
+// Plain non-selectable, non-draggable list - tapping a row opens AddCityActivity scrolled to
+// that city (see ClockFragment) instead of a popup dialog or edit dialog; there is no
+// long-press delete anymore, that happens by unchecking the city in AddCityActivity itself.
 class TimeZonesAdapter(activity: SimpleActivity, var timeZones: ArrayList<MyTimeZone>, recyclerView: MyRecyclerView, itemClick: (Any) -> Unit) :
     MyRecyclerViewAdapter(activity, recyclerView, itemClick) {
 
-    var todayDateString = activity.getFormattedDate(Calendar.getInstance())
-
-    init {
-        setupDragListener(true)
-    }
-
-    override fun getActionMenuId() = R.menu.cab_timezones
+    override fun getActionMenuId() = 0
 
     override fun prepareActionMode(menu: Menu) {}
 
-    override fun actionItemPressed(id: Int) {
-        if (selectedKeys.isEmpty()) {
-            return
-        }
-
-        when (id) {
-            R.id.cab_delete -> deleteItems()
-        }
-    }
+    override fun actionItemPressed(id: Int) {}
 
     override fun getSelectableItemCount() = timeZones.size
 
-    override fun getIsItemSelectable(position: Int) = true
+    override fun getIsItemSelectable(position: Int) = false
 
     override fun getItemSelectionKey(position: Int) = timeZones.getOrNull(position)?.id
 
@@ -60,6 +45,10 @@ class TimeZonesAdapter(activity: SimpleActivity, var timeZones: ArrayList<MyTime
 
     override fun onBindViewHolder(holder: MyRecyclerViewAdapter.ViewHolder, position: Int) {
         val timeZone = timeZones[position]
+        // (true, true) preserves single-tap -> itemClick, same as before this round's rework;
+        // long-press selection is blocked separately via getIsItemSelectable() = false above,
+        // not by these flags (StopwatchAdapter's (false, false) is for a fully passive list
+        // with no tap action at all, which doesn't apply here).
         holder.bindView(timeZone, true, true) { itemView, layoutPosition ->
             setupView(itemView, timeZone)
         }
@@ -72,32 +61,12 @@ class TimeZonesAdapter(activity: SimpleActivity, var timeZones: ArrayList<MyTime
     fun updateItems(newItems: ArrayList<MyTimeZone>) {
         timeZones = newItems
         notifyDataSetChanged()
-        finishActMode()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateTimes() {
         notifyDataSetChanged()
     }
-
-    private fun deleteItems() {
-        val timeZonesToRemove = ArrayList<MyTimeZone>(selectedKeys.size)
-        val timeZoneIDsToRemove = ArrayList<String>(selectedKeys.size)
-        val positions = getSelectedItemPositions()
-        getSelectedItems().forEach {
-            timeZonesToRemove.add(it)
-            timeZoneIDsToRemove.add(it.id.toString())
-        }
-
-        timeZones.removeAll(timeZonesToRemove)
-        removeSelectedItems(positions)
-
-        val selectedTimeZones = activity.config.selectedTimeZones
-        val newTimeZones = selectedTimeZones.filter { !timeZoneIDsToRemove.contains(it) }.toHashSet()
-        activity.config.selectedTimeZones = newTimeZones
-    }
-
-    private fun getSelectedItems() = timeZones.filter { selectedKeys.contains(it.id) } as ArrayList<MyTimeZone>
 
     private fun setupView(view: View, timeZone: MyTimeZone) {
         val currTimeZone = TimeZone.getTimeZone(timeZone.zoneName)
@@ -108,25 +77,27 @@ class TimeZonesAdapter(activity: SimpleActivity, var timeZones: ArrayList<MyTime
             offset += currTimeZone.dstSavings
         }
         val passedSeconds = ((calendar.timeInMillis + offset) / 1000).toInt()
-        val formattedTime = activity.getFormattedTime(passedSeconds, false, false)
-        val formattedDate = activity.getFormattedDate(calendar)
+        // Uppercased to match the AM/PM case shown by the main clock (MyTextClock).
+        val formattedTime = activity.getFormattedTime(passedSeconds, false, false).toString().uppercase()
 
-        val isSelected = selectedKeys.contains(timeZone.id)
+        val localOffsetMillis = Calendar.getInstance().get(Calendar.ZONE_OFFSET) + Calendar.getInstance().get(Calendar.DST_OFFSET)
+        val relativeOffsetHours = Math.round((offset - localOffsetMillis) / 3_600_000f)
+        val offsetText = if (relativeOffsetHours == 0) {
+            "+0hr"
+        } else {
+            "%+dhr".format(relativeOffsetHours)
+        }
+
         ItemTimeZoneBinding.bind(view).apply {
-            timeZoneFrame.isSelected = isSelected
+            timeZoneEditIcon.applyColorFilter(textColor)
             timeZoneTitle.text = timeZone.title
             timeZoneTitle.setTextColor(textColor)
 
             timeZoneTime.text = formattedTime
             timeZoneTime.setTextColor(textColor)
 
-            if (formattedDate != todayDateString) {
-                timeZoneDate.beVisible()
-                timeZoneDate.text = formattedDate
-                timeZoneDate.setTextColor(textColor)
-            } else {
-                timeZoneDate.beGone()
-            }
+            timeZoneOffset.text = offsetText
+            timeZoneOffset.setTextColor(textColor)
         }
     }
 }

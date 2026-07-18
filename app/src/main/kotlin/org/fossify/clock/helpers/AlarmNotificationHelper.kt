@@ -9,6 +9,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import org.fossify.clock.R
 import org.fossify.clock.activities.AlarmActivity
+import org.fossify.clock.extensions.config
 import org.fossify.clock.extensions.getFormattedTime
 import org.fossify.clock.extensions.getOpenAlarmTabIntent
 import org.fossify.clock.extensions.getSnoozePendingIntent
@@ -47,7 +48,7 @@ class AlarmNotificationHelper(private val context: Context) {
             passedSeconds = alarm.timeInMinutes * 60,
             showSeconds = false,
             makeAmPmSmaller = false
-        )
+        ).toString().uppercase()
 
         val reminderIntent = Intent(context, AlarmActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -62,6 +63,13 @@ class AlarmNotificationHelper(private val context: Context) {
         val dismissIntent = context.getStopAlarmPendingIntent(alarm)
         val snoozeIntent = context.getSnoozePendingIntent(alarm)
 
+        // Same two labeled actions as the full-screen ring UI when shown as heads-up instead -
+        // see docs/elderly-spec/ring-screens.md.
+        val snoozeMinutes = context.config.snoozeTime
+        val snoozeDurationText = context.resources.getQuantityString(
+            org.fossify.commons.R.plurals.minutes, snoozeMinutes, snoozeMinutes
+        )
+
         return NotificationCompat.Builder(context, channelId)
             .setContentTitle(contentTitle)
             .setContentText(contentText)
@@ -72,12 +80,12 @@ class AlarmNotificationHelper(private val context: Context) {
             .setDefaults(NotificationCompat.DEFAULT_LIGHTS)
             .addAction(
                 org.fossify.commons.R.drawable.ic_snooze_vector,
-                context.getString(org.fossify.commons.R.string.snooze),
+                context.getString(R.string.snooze_with_duration, snoozeDurationText),
                 snoozeIntent
             )
             .addAction(
-                org.fossify.commons.R.drawable.ic_cross_vector,
-                context.getString(org.fossify.commons.R.string.dismiss),
+                org.fossify.commons.R.drawable.ic_check_vector,
+                context.getString(R.string.stop_alarm),
                 dismissIntent
             )
             .setDeleteIntent(dismissIntent)

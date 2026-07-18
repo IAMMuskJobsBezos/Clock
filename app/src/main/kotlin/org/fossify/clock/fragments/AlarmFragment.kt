@@ -1,28 +1,26 @@
 package org.fossify.clock.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.fossify.clock.activities.AlarmEditorActivity
 import org.fossify.clock.activities.MainActivity
 import org.fossify.clock.activities.SimpleActivity
 import org.fossify.clock.adapters.AlarmsAdapter
 import org.fossify.clock.databinding.FragmentAlarmBinding
 import org.fossify.clock.dialogs.ChangeAlarmSortDialog
-import org.fossify.clock.dialogs.EditAlarmDialog
 import org.fossify.clock.extensions.alarmController
 import org.fossify.clock.extensions.cancelAlarmClock
 import org.fossify.clock.extensions.config
-import org.fossify.clock.extensions.createNewAlarm
 import org.fossify.clock.extensions.dbHelper
 import org.fossify.clock.extensions.firstDayOrder
 import org.fossify.clock.extensions.handleFullScreenNotificationsPermission
 import org.fossify.clock.extensions.updateWidgets
-import org.fossify.clock.helpers.DEFAULT_ALARM_MINUTES
 import org.fossify.clock.helpers.SORT_BY_ALARM_TIME
 import org.fossify.clock.helpers.SORT_BY_DATE_AND_TIME
-import org.fossify.clock.helpers.getTomorrowBit
 import org.fossify.clock.interfaces.ToggleAlarmInterface
 import org.fossify.clock.models.Alarm
 import org.fossify.clock.models.AlarmEvent
@@ -34,14 +32,12 @@ import org.fossify.commons.extensions.updateTextColors
 import org.fossify.commons.helpers.SORT_BY_CUSTOM
 import org.fossify.commons.helpers.SORT_BY_DATE_CREATED
 import org.fossify.commons.helpers.ensureBackgroundThread
-import org.fossify.commons.models.AlarmSound
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class AlarmFragment : Fragment(), ToggleAlarmInterface {
     private var alarms = ArrayList<Alarm>()
-    private var currentEditAlarmDialog: EditAlarmDialog? = null
 
     private lateinit var binding: FragmentAlarmBinding
 
@@ -78,11 +74,8 @@ class AlarmFragment : Fragment(), ToggleAlarmInterface {
     private fun setupViews() {
         binding.apply {
             requireContext().updateTextColors(alarmFragment)
-            alarmFab.setOnClickListener {
-                val newAlarm = root.context.createNewAlarm(DEFAULT_ALARM_MINUTES, 0)
-                newAlarm.isEnabled = true
-                newAlarm.days = getTomorrowBit()
-                openEditAlarm(newAlarm)
+            alarmAdd.setOnClickListener {
+                openEditAlarm(null)
             }
         }
 
@@ -165,13 +158,12 @@ class AlarmFragment : Fragment(), ToggleAlarmInterface {
         }
     }
 
-    private fun openEditAlarm(alarm: Alarm) {
-        currentEditAlarmDialog = EditAlarmDialog(activity as SimpleActivity, alarm) {
-            alarm.id = it
-            currentEditAlarmDialog = null
-            setupAlarms()
-            checkAlarmState(alarm)
+    private fun openEditAlarm(alarm: Alarm?) {
+        val intent = Intent(activity, AlarmEditorActivity::class.java)
+        if (alarm != null) {
+            intent.putExtra(AlarmEditorActivity.ALARM_ID, alarm.id)
         }
+        startActivity(intent)
     }
 
     override fun alarmToggled(id: Int, isEnabled: Boolean) {
@@ -204,10 +196,6 @@ class AlarmFragment : Fragment(), ToggleAlarmInterface {
             activity.cancelAlarmClock(alarm)
         }
         activity.updateClockTabAlarm()
-    }
-
-    fun updateAlarmSound(alarmSound: AlarmSound) {
-        currentEditAlarmDialog?.updateSelectedAlarmSound(alarmSound)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

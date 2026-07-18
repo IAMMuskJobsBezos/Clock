@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/edit_alarm_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <org.fossify.commons.views.MyAppBarLayout
+        android:id="@+id/edit_alarm_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/edit_alarm_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/color_primary"
+            app:title="@string/alarm"
+            app:titleTextAppearance="@style/AppTheme.ActionBar.TitleTextStyle" />
+
+    </org.fossify.commons.views.MyAppBarLayout>
+
+    <RelativeLayout
+        android:id="@+id/edit_alarm_content_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/edit_alarm_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/edit_alarm_buttons_holder"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/edit_alarm_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/big_margin">
+
+            <!-- Wheel column headers -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <org.fossify.commons.views.MyTextView
+                    android:id="@+id/edit_alarm_hour_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/hour"
+                    android:textSize="@dimen/elderly_body_text_size" />
+
+                <org.fossify.commons.views.MyTextView
+                    android:id="@+id/edit_alarm_minute_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/minute"
+                    android:textSize="@dimen/elderly_body_text_size" />
+
+                <org.fossify.commons.views.MyTextView
+                    android:id="@+id/edit_alarm_ampm_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/am_pm"
+                    android:textSize="@dimen/elderly_body_text_size" />
+
+            </LinearLayout>
+
+            <!-- Wheels -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/edit_alarm_hour_picker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:np_formatter="%02d"
+                    app:np_selectedTextSize="@dimen/elderly_list_time_text_size"
+                    app:np_textSize="@dimen/elderly_body_text_size" />
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/edit_alarm_minute_picker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:np_formatter="%02d"
+                    app:np_max="59"
+                    app:np_min="0"
+                    app:np_selectedTextSize="@dimen/elderly_list_time_text_size"
+                    app:np_textSize="@dimen/elderly_body_text_size" />
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/edit_alarm_ampm_picker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:np_max="1"
+                    app:np_min="0"
+                    app:np_selectedTextSize="@dimen/elderly_list_time_text_size"
+                    app:np_textSize="@dimen/elderly_body_text_size"
+                    app:np_wrapSelectorWheel="true" />
+
+            </LinearLayout>
+
+            <!-- Repeat -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/big_margin"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/activity_margin"
+                android:paddingVertical="@dimen/small_margin">
+
+                <org.fossify.commons.views.MyTextView
+                    android:id="@+id/edit_alarm_repeat_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/repeat"
+                    android:textSize="@dimen/elderly_body_text_size" />
+
+                <org.fossify.commons.views.MyTextView
+                    android:id="@+id/edit_alarm_repeat_off_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:text="@string/off"
+                    android:textSize="@dimen/elderly_body_text_size" />
+
+                <org.fossify.commons.views.MyMaterialSwitch
+                    android:id="@+id/edit_alarm_repeat_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <org.fossify.commons.views.MyTextView
+                    android:id="@+id/edit_alarm_repeat_on_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:text="@string/on"
+                    android:textSize="@dimen/elderly_body_text_size" />
+
+            </LinearLayout>
+
+            <!-- Day chips, visible only when Repeat is On -->
+            <LinearLayout
+                android:id="@+id/edit_alarm_days_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/elderly_day_chip_row_padding" />
+
+            <org.fossify.commons.views.MyTextView
+                android:id="@+id/edit_alarm_days_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:gravity="center"
+                android:text="@string/tap_to_select"
+                android:textSize="@dimen/elderly_body_text_size" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/edit_alarm_buttons_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="@dimen/activity_margin"
+        android:layout_marginVertical="@dimen/normal_margin"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_alarm_cancel"
+            style="@style/ElderlyButton.Secondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            app:icon="@drawable/ic_cross_vector" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_alarm_save"
+            style="@style/ElderlyButton.Primary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/save"
+            app:icon="@drawable/ic_check_vector" />
+
+    </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

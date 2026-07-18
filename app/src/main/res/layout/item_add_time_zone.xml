@@ -1,34 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/add_time_zone_holder"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:minHeight="@dimen/elderly_row_min_height"
+    android:paddingHorizontal="@dimen/activity_margin">
+
+    <View
+        android:id="@+id/add_time_zone_selector"
+        android:layout_width="@dimen/elderly_selector_circle_size"
+        android:layout_height="@dimen/elderly_selector_circle_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <org.fossify.commons.views.MyTextView
         android:id="@+id/add_time_zone_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@+id/add_time_zone_checkbox"
+        android:layout_marginStart="@dimen/normal_margin"
         android:ellipsize="end"
-        android:gravity="center_vertical"
         android:maxLines="1"
-        android:padding="@dimen/activity_margin"
-        android:textSize="@dimen/bigger_text_size"
-        tools:text="GMT-11:00 Midway" />
+        android:textSize="@dimen/elderly_list_secondary_text_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/add_time_zone_offset"
+        app:layout_constraintStart_toEndOf="@+id/add_time_zone_selector"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Los Angeles, CA" />
 
-    <org.fossify.commons.views.MyAppCompatCheckbox
-        android:id="@+id/add_time_zone_checkbox"
+    <org.fossify.commons.views.MyTextView
+        android:id="@+id/add_time_zone_offset"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignTop="@+id/add_time_zone_title"
-        android:layout_alignBottom="@+id/add_time_zone_title"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/activity_margin"
-        android:clickable="false"
-        android:gravity="center" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/normal_margin"
+        android:textSize="@dimen/elderly_list_secondary_text_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="+3hr" />
 
-</RelativeLayout>
+    <!-- Subtle row separator - a plain per-row view (not a RecyclerView ItemDecoration) so it
+         naturally appears between every row, including trailing the last one, with no extra
+         edge-case handling needed. Negative margins cancel out the row root's own
+         paddingHorizontal (activity_margin) so the line reaches the true screen edge on both
+         sides, not just the padded content area. -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/divider_height"
+        android:layout_marginStart="-16dp"
+        android:layout_marginEnd="-16dp"
+        android:background="@color/divider_grey"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

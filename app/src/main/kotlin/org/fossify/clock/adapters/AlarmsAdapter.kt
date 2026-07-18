@@ -13,6 +13,7 @@ import org.fossify.clock.databinding.ItemAlarmBinding
 import org.fossify.clock.extensions.config
 import org.fossify.clock.extensions.dbHelper
 import org.fossify.clock.extensions.getFormattedTime
+import org.fossify.clock.extensions.styleToggleSwitch
 import org.fossify.clock.helpers.updateNonRecurringAlarmDay
 import org.fossify.clock.interfaces.ToggleAlarmInterface
 import org.fossify.clock.models.Alarm
@@ -21,7 +22,6 @@ import org.fossify.commons.adapters.MyRecyclerViewAdapter
 import org.fossify.commons.dialogs.ConfirmationDialog
 import org.fossify.commons.extensions.applyColorFilter
 import org.fossify.commons.extensions.beVisibleIf
-import org.fossify.commons.extensions.getSelectedDaysString
 import org.fossify.commons.extensions.move
 import org.fossify.commons.helpers.EVERY_DAY_BIT
 import org.fossify.commons.helpers.SORT_BY_CUSTOM
@@ -98,7 +98,9 @@ class AlarmsAdapter(
         holder.bindView(
             any = alarm,
             allowSingleClick = true,
-            allowLongClick = true
+            // No long-press bulk-select/delete for this audience - deletion happens inside the
+            // full-screen editor only, see docs/elderly-spec/alarm.md.
+            allowLongClick = false
         ) { itemView, _ ->
             setupView(itemView, alarm, holder)
         }
@@ -136,6 +138,9 @@ class AlarmsAdapter(
         val isSelected = selectedKeys.contains(alarm.id)
         ItemAlarmBinding.bind(view).apply {
             alarmHolder.isSelected = isSelected
+            alarmEditIcon.applyColorFilter(textColor)
+            alarmOffLabel.setTextColor(textColor)
+            alarmOnLabel.setTextColor(textColor)
             alarmDragHandle.beVisibleIf(selectedKeys.isNotEmpty())
             alarmDragHandle.applyColorFilter(textColor)
             alarmDragHandle.setOnTouchListener { _, event ->
@@ -144,11 +149,12 @@ class AlarmsAdapter(
                 }
                 false
             }
+            // Uppercased to match the AM/PM case shown by the main clock (MyTextClock).
             alarmTime.text = activity.getFormattedTime(
                 passedSeconds = alarm.timeInMinutes * 60,
                 showSeconds = false,
-                makeAmPmSmaller = true
-            )
+                makeAmPmSmaller = false
+            ).toString().uppercase()
             alarmTime.setTextColor(textColor)
 
             alarmDays.text = getAlarmSelectedDaysString(alarm)
@@ -159,7 +165,7 @@ class AlarmsAdapter(
             alarmLabel.beVisibleIf(alarm.label.isNotEmpty())
 
             alarmSwitch.isChecked = alarm.isEnabled
-            alarmSwitch.setColors(textColor, properPrimaryColor, backgroundColor)
+            styleToggleSwitch(alarmSwitch, properPrimaryColor, backgroundColor)
             alarmSwitch.setOnClickListener {
                 toggleAlarm(binding = this, alarm = alarm)
             }
@@ -202,8 +208,12 @@ class AlarmsAdapter(
             return if (alarm.days == EVERY_DAY_BIT) {
                 activity.getString(org.fossify.commons.R.string.every_day)
             } else {
+                // Built locally: commons' getSelectedDaysString(Context, Int) throws a
+                // ClassCastException (Arrays$ArrayList -> ArrayList) inside commons-6.1.6.
                 // TODO: This does not respect config.firstDayOfWeek
-                activity.getSelectedDaysString(alarm.days)
+                val dayNames = resources.getStringArray(org.fossify.commons.R.array.week_days_short)
+                (0..6).filter { alarm.days and (1 shl it) != 0 }
+                    .joinToString(", ") { dayNames[it] }
             }
         }
 

@@ -2,4 +2,35 @@
 
     <style name="AppTheme" parent="AppTheme.Base"/>
 
+    <!-- Elderly-scale full-width/paired pill buttons, see docs/elderly-spec/design-principles.md -->
+    <style name="ElderlyButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:minHeight">@dimen/elderly_button_height</item>
+        <item name="android:textSize">@dimen/elderly_button_text_size</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">@dimen/material_dialog_corner_radius</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/normal_margin</item>
+    </style>
+
+    <!-- Primary/confirming action: Start, Save, Add, Stop Alarm -->
+    <style name="ElderlyButton.Primary">
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="iconTint">?attr/colorOnPrimary</item>
+    </style>
+
+    <!-- Secondary/leaving action: Cancel, Reset, Snooze -->
+    <style name="ElderlyButton.Secondary" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:minHeight">@dimen/elderly_button_height</item>
+        <item name="android:textSize">@dimen/elderly_button_text_size</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">@dimen/material_dialog_corner_radius</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/normal_margin</item>
+        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="iconTint">?attr/colorPrimary</item>
+    </style>
+
 </resources>

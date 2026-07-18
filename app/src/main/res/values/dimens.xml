@@ -1,5 +1,4 @@
 <resources>
-    <dimen name="alarm_day_size">38dp</dimen>
     <dimen name="stopwatch_button_small_size">60dp</dimen>
     <dimen name="stopwatch_button_size">64dp</dimen>
     <dimen name="reminder_background_min_size">70dp</dimen>
@@ -20,4 +19,52 @@
     <dimen name="widget_details_text_size">14sp</dimen>
     <dimen name="reminder_activity_title_size">32sp</dimen>
     <dimen name="reminder_activity_text_size">26sp</dimen>
+
+    <!-- Elderly-scale tokens, see docs/elderly-spec/design-principles.md -->
+    <!-- Primary time/countdown/elapsed displays, autosizes down to the min on smaller screens -->
+    <dimen name="elderly_display_text_size">76sp</dimen>
+    <dimen name="elderly_display_text_size_min">48sp</dimen>
+    <!-- List row primary time (alarm rows, world clock rows) -->
+    <dimen name="elderly_list_time_text_size">32sp</dimen>
+    <!-- List row secondary line (days, city name, date) -->
+    <dimen name="elderly_list_secondary_text_size">20sp</dimen>
+    <!-- Body text floor -->
+    <dimen name="elderly_body_text_size">18sp</dimen>
+    <!-- Button label text -->
+    <dimen name="elderly_button_text_size">20sp</dimen>
+    <!-- Full-width/paired pill buttons -->
+    <dimen name="elderly_button_height">64dp</dimen>
+    <!-- Minimum touch target for any tappable control -->
+    <dimen name="elderly_touch_target_min">56dp</dimen>
+    <!-- Day-of-week chips (S M T W T F S): squares sized to fit all 7 across a ~384dp-wide
+         screen (a more realistic modern-phone baseline than the ultra-conservative 360dp used
+         originally - Emmett asked for bigger squares for thick-fingered users) with a reduced,
+         dedicated row side padding (elderly_day_chip_row_padding, not the standard
+         activity_margin) and the same 8dp gap between chips as before (kept unchanged - "still
+         maintaining good spacing"): 7 * 43dp + 7 * 8dp + 2 * 12dp = 381dp. Padding is now just
+         2dp clearance around the letter (was 8dp) so the glyph fills more of the bigger box. -->
+    <dimen name="elderly_day_chip_size">43dp</dimen>
+    <dimen name="elderly_day_chip_gap">8dp</dimen>
+    <dimen name="elderly_day_chip_radius">9dp</dimen>
+    <dimen name="elderly_day_chip_padding">2dp</dimen>
+    <dimen name="elderly_day_chip_row_padding">12dp</dimen>
+    <!-- List row minimum height (alarm rows, world clock rows) -->
+    <dimen name="elderly_row_min_height">96dp</dimen>
+    <!-- Selection indicator circle (Add City rows) - purple outline/fill, same visual
+         language as the alarm day chips. The row itself (elderly_row_min_height) is the
+         touch target, not this circle, so it doesn't need to independently meet the 56dp
+         minimum. -->
+    <dimen name="elderly_selector_circle_size">28dp</dimen>
+    <!-- Ring-screen (alarm firing) huge buttons -->
+    <dimen name="elderly_ring_button_height">96dp</dimen>
+    <!-- Hour/Minute/Second header label nudge, shared by Stopwatch and Timer's running-state
+         header (both sit above a single compact autosized HH:MM:SS-style string, narrower than
+         the full-width 3-equal-weight-column header row above it) - shifts each label's
+         centered text left/right within its column via asymmetric padding so it reads closer
+         to lining up over its digit group. Visual-feel fit against screenshots, not a formula;
+         one shared set so the two screens can't drift apart - retune here if it stops fitting
+         either screen. -->
+    <dimen name="elderly_time_header_hour_padding_start">16dp</dimen>
+    <dimen name="elderly_time_header_minute_padding_end">12dp</dimen>
+    <dimen name="elderly_time_header_second_padding_end">20dp</dimen>
 </resources>

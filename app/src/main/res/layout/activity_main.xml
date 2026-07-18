@@ -15,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/color_primary"
-            app:menu="@menu/menu"
             app:titleTextAppearance="@style/AppTheme.ActionBar.TitleTextStyle" />
 
     </org.fossify.commons.views.MyAppBarLayout>
@@ -26,7 +25,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.duolingo.open.rtlviewpager.RtlViewPager
+        <org.fossify.clock.views.NonSwipeableViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

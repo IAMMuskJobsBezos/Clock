@@ -4,21 +4,20 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import org.fossify.clock.R
 import org.fossify.clock.activities.SimpleActivity
 import org.fossify.clock.databinding.ItemLapBinding
-import org.fossify.clock.extensions.formatStopwatchTime
-import org.fossify.clock.helpers.SORT_BY_LAP
-import org.fossify.clock.helpers.SORT_BY_LAP_TIME
-import org.fossify.clock.helpers.SORT_BY_TOTAL_TIME
-import org.fossify.clock.extensions.isLive
+import org.fossify.clock.extensions.getFormattedDuration
 import org.fossify.clock.models.Lap
 import org.fossify.commons.adapters.MyRecyclerViewListAdapter
 import org.fossify.commons.views.MyRecyclerView
 
+/**
+ * Laps are always shown newest-first with no sorting controls (decision #11).
+ */
 class StopwatchAdapter(
     activity: SimpleActivity,
     recyclerView: MyRecyclerView,
-    private val onItemClick: (Any) -> Unit,
 ) : MyRecyclerViewListAdapter<Lap>(
     activity = activity,
     recyclerView = recyclerView,
@@ -67,23 +66,11 @@ class StopwatchAdapter(
 
     private fun setupView(view: View, lap: Lap) {
         ItemLapBinding.bind(view).apply {
-            lapOrder.text = if (lap.isLive()) currentList.size.toString() else lap.id.toString()
+            lapOrder.text = activity.getString(R.string.lap_number_format, lap.id)
             lapOrder.setTextColor(textColor)
-            lapOrder.setOnClickListener {
-                onItemClick(SORT_BY_LAP)
-            }
 
-            lapLapTime.text = lap.lapTime.formatStopwatchTime(false)
+            lapLapTime.text = lap.lapTime.getFormattedDuration(forceShowHours = true)
             lapLapTime.setTextColor(textColor)
-            lapLapTime.setOnClickListener {
-                onItemClick(SORT_BY_LAP_TIME)
-            }
-
-            lapTotalTime.text = lap.totalTime.formatStopwatchTime(false)
-            lapTotalTime.setTextColor(textColor)
-            lapTotalTime.setOnClickListener {
-                onItemClick(SORT_BY_TOTAL_TIME)
-            }
         }
     }
 

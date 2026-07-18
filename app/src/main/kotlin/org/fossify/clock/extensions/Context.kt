@@ -21,7 +21,6 @@ import androidx.core.app.AlarmManagerCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import org.fossify.clock.R
-import org.fossify.clock.activities.SnoozeReminderActivity
 import org.fossify.clock.activities.SplashActivity
 import org.fossify.clock.databases.AppDatabase
 import org.fossify.clock.helpers.ALARM_ID
@@ -63,6 +62,7 @@ import org.fossify.clock.services.SnoozeService
 import org.fossify.commons.extensions.formatMinutesToTimeString
 import org.fossify.commons.extensions.formatSecondsToTimeString
 import org.fossify.commons.extensions.getDefaultAlarmSound
+import org.fossify.commons.extensions.getFormattedDuration
 import org.fossify.commons.extensions.getLaunchIntent
 import org.fossify.commons.extensions.getProperPrimaryColor
 import org.fossify.commons.extensions.grantReadUriPermission
@@ -130,10 +130,9 @@ fun Context.getAllTimeZonesModified(): ArrayList<MyTimeZone> {
     val timeZones = getAllTimeZones()
     val editedTitlesMap = getEditedTimeZonesMap()
     timeZones.forEach {
-        if (editedTitlesMap.keys.contains(it.id)) {
-            it.title = editedTitlesMap[it.id]!!
-        } else {
-            it.title = it.title.substring(it.title.indexOf(' ')).trim()
+        val editedTitle = editedTitlesMap[it.id]
+        if (editedTitle != null) {
+            it.title = editedTitle
         }
     }
     return timeZones
@@ -459,10 +458,11 @@ fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent): No
         notificationManager.createNotificationChannel(this)
     }
 
-    val title = timer.label.ifEmpty { getString(R.string.timer) }
+    // "Time's up" + original duration + a single "Stop Timer" action, no snooze -
+    // see docs/elderly-spec/ring-screens.md.
     val builder = NotificationCompat.Builder(this, channelId)
-        .setContentTitle(title)
-        .setContentText(getString(R.string.time_expired))
+        .setContentTitle(getString(R.string.times_up))
+        .setContentText(timer.seconds.getFormattedDuration(true))
         .setSmallIcon(R.drawable.ic_hourglass_vector)
         .setContentIntent(pendingIntent)
         .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -471,8 +471,8 @@ fun Context.getTimerNotification(timer: Timer, pendingIntent: PendingIntent): No
         .setSound(soundUri.toUri(), STREAM_ALARM)
         .setChannelId(channelId)
         .addAction(
-            org.fossify.commons.R.drawable.ic_cross_vector,
-            getString(org.fossify.commons.R.string.dismiss),
+            org.fossify.commons.R.drawable.ic_check_vector,
+            getString(R.string.stop_timer),
             getHideTimerPendingIntent(timer.id!!)
         )
 
@@ -524,30 +524,17 @@ fun Context.getSkipUpcomingAlarmPendingIntent(alarmId: Int, notificationId: Int)
     )
 }
 
+// Notification "Snooze" action always uses the app-default duration, no duration picker -
+// same two labeled actions as the full-screen ring UI, see docs/elderly-spec/ring-screens.md.
 fun Context.getSnoozePendingIntent(alarm: Alarm): PendingIntent {
-    val snoozeClass = if (config.useSameSnooze) {
-        SnoozeService::class.java
-    } else {
-        SnoozeReminderActivity::class.java
-    }
-
-    val intent = Intent(this, snoozeClass).setAction("Snooze")
+    val intent = Intent(this, SnoozeService::class.java).setAction("Snooze")
     intent.putExtra(ALARM_ID, alarm.id)
-    return if (config.useSameSnooze) {
-        PendingIntent.getService(
-            this,
-            alarm.id,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-    } else {
-        PendingIntent.getActivity(
-            this,
-            alarm.id,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-    }
+    return PendingIntent.getService(
+        this,
+        alarm.id,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
 }
 
 fun Context.checkAlarmsWithDeletedSoundUri(uri: String) {

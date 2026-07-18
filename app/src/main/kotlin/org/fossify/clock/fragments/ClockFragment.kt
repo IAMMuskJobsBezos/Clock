@@ -1,5 +1,6 @@
 package org.fossify.clock.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -7,18 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.fossify.clock.activities.AddCityActivity
 import org.fossify.clock.activities.SimpleActivity
 import org.fossify.clock.adapters.TimeZonesAdapter
 import org.fossify.clock.databinding.FragmentClockBinding
-import org.fossify.clock.dialogs.AddTimeZonesDialog
-import org.fossify.clock.dialogs.EditTimeZoneDialog
 import org.fossify.clock.extensions.colorCompoundDrawable
 import org.fossify.clock.extensions.config
 import org.fossify.clock.extensions.getAllTimeZonesModified
 import org.fossify.clock.extensions.getClosestEnabledAlarmString
-import org.fossify.clock.extensions.getFormattedDate
-import org.fossify.clock.helpers.FORMAT_12H_WITH_SECONDS
-import org.fossify.clock.helpers.FORMAT_24H_WITH_SECONDS
+import org.fossify.clock.helpers.FORMAT_12H
+import org.fossify.clock.helpers.FORMAT_24H
 import org.fossify.clock.helpers.getPassedSeconds
 import org.fossify.clock.models.MyTimeZone
 import org.fossify.commons.extensions.beVisibleIf
@@ -73,15 +72,15 @@ class ClockFragment : Fragment() {
             safeContext.updateTextColors(clockFragment)
             clockTime.setTextColor(safeContext.getProperTextColor())
             val clockFormat = if (safeContext.config.use24HourFormat) {
-                FORMAT_24H_WITH_SECONDS
+                FORMAT_24H
             } else {
-                FORMAT_12H_WITH_SECONDS
+                FORMAT_12H
             }
 
             clockTime.format24Hour = clockFormat
             clockTime.format12Hour = clockFormat
-            clockFab.setOnClickListener {
-                fabClicked()
+            clockAddCity.setOnClickListener {
+                addCityClicked()
             }
 
             updateTimeZones()
@@ -108,8 +107,6 @@ class ClockFragment : Fragment() {
 
     private fun updateDate() {
         calendar = Calendar.getInstance()
-        val formattedDate = requireContext().getFormattedDate(calendar)
-        (binding.timeZonesList.adapter as? TimeZonesAdapter)?.todayDateString = formattedDate
     }
 
     fun updateAlarm() {
@@ -137,9 +134,11 @@ class ClockFragment : Fragment() {
         val currAdapter = binding.timeZonesList.adapter
         if (currAdapter == null) {
             TimeZonesAdapter(safeContext, timeZones, binding.timeZonesList) {
-                EditTimeZoneDialog(safeContext, it as MyTimeZone) {
-                    updateTimeZones()
-                }
+                val timeZoneId = (it as MyTimeZone).id
+                safeContext.startActivity(
+                    Intent(safeContext, AddCityActivity::class.java)
+                        .putExtra(AddCityActivity.SCROLL_TO_TIME_ZONE_ID, timeZoneId)
+                )
             }.apply {
                 this@ClockFragment.binding.timeZonesList.adapter = this
             }
@@ -153,10 +152,8 @@ class ClockFragment : Fragment() {
         }
     }
 
-    private fun fabClicked() {
+    private fun addCityClicked() {
         val safeContext = activity as? SimpleActivity ?: return
-        AddTimeZonesDialog(safeContext) {
-            updateTimeZones()
-        }
+        safeContext.startActivity(Intent(safeContext, AddCityActivity::class.java))
     }
 }

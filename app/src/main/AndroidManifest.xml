@@ -101,6 +101,20 @@
         </activity>
 
         <activity
+            android:name=".activities.AddCityActivity"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:label="@string/add_city"
+            android:parentActivityName=".activities.MainActivity" />
+
+        <activity
+            android:name=".activities.AlarmEditorActivity"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:label="@string/alarm"
+            android:parentActivityName=".activities.MainActivity" />
+
+        <activity
             android:name="org.fossify.commons.activities.AboutActivity"
             android:configChanges="orientation"
             android:exported="false"
@@ -113,12 +127,6 @@
             android:exported="false"
             android:label="@string/customize_colors"
             android:parentActivityName=".activities.SettingsActivity" />
-
-        <activity
-            android:name=".activities.SnoozeReminderActivity"
-            android:configChanges="orientation"
-            android:exported="false"
-            android:theme="@style/Theme.Transparent" />
 
         <activity
             android:name=".activities.WidgetDigitalConfigureActivity"

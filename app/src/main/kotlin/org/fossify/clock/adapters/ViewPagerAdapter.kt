@@ -9,7 +9,6 @@ import org.fossify.clock.fragments.ClockFragment
 import org.fossify.clock.fragments.StopwatchFragment
 import org.fossify.clock.fragments.TimerFragment
 import org.fossify.clock.helpers.*
-import org.fossify.commons.models.AlarmSound
 
 class ViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
     private val fragments = HashMap<Int, Fragment>()
@@ -41,28 +40,8 @@ class ViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
         else -> throw RuntimeException("Trying to fetch unknown fragment id $position")
     }
 
-    fun showAlarmSortDialog() {
-        (fragments[TAB_ALARM_INDEX] as? AlarmFragment)?.showSortingDialog()
-    }
-
-    fun showTimerSortDialog() {
-        (fragments[TAB_TIMER_INDEX] as? TimerFragment)?.showSortingDialog()
-    }
-
     fun updateClockTabAlarm() {
         (fragments[TAB_CLOCK_INDEX] as? ClockFragment)?.updateAlarm()
-    }
-
-    fun updateAlarmTabAlarmSound(alarmSound: AlarmSound) {
-        (fragments[TAB_ALARM_INDEX] as? AlarmFragment)?.updateAlarmSound(alarmSound)
-    }
-
-    fun updateTimerTabAlarmSound(alarmSound: AlarmSound) {
-        (fragments[TAB_TIMER_INDEX] as? TimerFragment)?.updateAlarmSound(alarmSound)
-    }
-
-    fun updateTimerPosition(timerId: Int) {
-        (fragments[TAB_TIMER_INDEX] as? TimerFragment)?.updatePosition(timerId)
     }
 
     fun startStopWatch() {

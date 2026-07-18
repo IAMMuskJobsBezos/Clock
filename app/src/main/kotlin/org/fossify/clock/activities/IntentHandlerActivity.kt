@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.provider.AlarmClock
 import androidx.core.net.toUri
 import org.fossify.clock.R
-import org.fossify.clock.dialogs.EditAlarmDialog
-import org.fossify.clock.dialogs.EditTimerDialog
 import org.fossify.clock.dialogs.SelectAlarmDialog
 import org.fossify.clock.extensions.alarmController
 import org.fossify.clock.extensions.alarmManager
@@ -22,6 +20,8 @@ import org.fossify.clock.extensions.isBitSet
 import org.fossify.clock.extensions.secondsToMillis
 import org.fossify.clock.extensions.timerHelper
 import org.fossify.clock.helpers.DEFAULT_ALARM_MINUTES
+import org.fossify.clock.helpers.OPEN_TAB
+import org.fossify.clock.helpers.TAB_TIMER
 import org.fossify.clock.helpers.TODAY_BIT
 import org.fossify.clock.helpers.TOMORROW_BIT
 import org.fossify.clock.helpers.UPCOMING_ALARM_NOTIFICATION_ID
@@ -37,11 +37,13 @@ import org.fossify.clock.models.TimerState
 import org.fossify.commons.dialogs.PermissionRequiredDialog
 import org.fossify.commons.extensions.getDefaultAlarmSound
 import org.fossify.commons.extensions.getFilenameFromUri
+import org.fossify.commons.extensions.getLaunchIntent
 import org.fossify.commons.extensions.openNotificationSettings
 import org.fossify.commons.helpers.SILENT
 import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.models.AlarmSound
 import org.greenrobot.eventbus.EventBus
+import kotlinx.serialization.json.Json
 import java.util.concurrent.TimeUnit
 
 class IntentHandlerActivity : SimpleActivity() {
@@ -174,49 +176,42 @@ class IntentHandlerActivity : SimpleActivity() {
         }
     }
 
+    // Single timer only (decision #7): the "new" timer from a voice/assistant SET_TIMER intent
+    // updates the one persistent timer row rather than creating another one.
     private fun Intent.setNewTimer() {
         val length = getIntExtra(AlarmClock.EXTRA_LENGTH, -1)
         val message = getStringExtra(AlarmClock.EXTRA_MESSAGE)
         val skipUi = getBooleanExtra(AlarmClock.EXTRA_SKIP_UI, false)
 
-        fun createAndStartNewTimer() {
-            val newTimer = createNewTimer()
+        timerHelper.getTimers { timers ->
+            val timer = timers.firstOrNull() ?: createNewTimer()
             if (message != null) {
-                newTimer.label = message
+                timer.label = message
+            }
+            if (length >= 0) {
+                timer.seconds = length
             }
 
-            if (length < 0 || !skipUi) {
-                newTimer.id = -1
-                openEditTimer(newTimer)
+            if (skipUi && length >= 0 && timer.state is TimerState.Idle) {
+                timerHelper.insertOrUpdateTimer(timer) {
+                    timer.id = it.toInt()
+                    config.timerLastConfig = timer
+                    startTimer(timer)
+                }
             } else {
-                newTimer.seconds = length
-                newTimer.oneShot = true
-
-                timerHelper.insertOrUpdateTimer(newTimer) {
-                    config.timerLastConfig = newTimer
-                    newTimer.id = it.toInt()
-                    startTimer(newTimer)
+                timerHelper.insertOrUpdateTimer(timer) {
+                    timer.id = it.toInt()
+                    openTimerTab()
                 }
             }
         }
+    }
 
-        if (hasExtra(AlarmClock.EXTRA_LENGTH)) {
-            timerHelper.findTimers(length, message ?: "") {
-                val existingTimer = it.firstOrNull { it.state is TimerState.Idle }
-
-                // We don't want to accidentally edit existing timer, so allow reuse only when skipping UI
-                if (existingTimer != null
-                    && skipUi
-                    && (existingTimer.state is TimerState.Idle || (existingTimer.state is TimerState.Finished && !existingTimer.oneShot))
-                ) {
-                    startTimer(existingTimer)
-                } else {
-                    createAndStartNewTimer()
-                }
-            }
-        } else {
-            createAndStartNewTimer()
-        }
+    private fun openTimerTab() {
+        val intent = getLaunchIntent() ?: Intent(this, MainActivity::class.java)
+        intent.putExtra(OPEN_TAB, TAB_TIMER)
+        startActivity(intent)
+        finish()
     }
 
     private fun Intent.dismissAlarm() {
@@ -362,18 +357,11 @@ class IntentHandlerActivity : SimpleActivity() {
     }
 
     private fun openEditAlarm(alarm: Alarm) {
-        EditAlarmDialog(this, alarm, onDismiss = { finish() }) {
-            alarm.id = it
-            startAlarm(alarm)
-            finish()
+        val intent = Intent(this, AlarmEditorActivity::class.java).apply {
+            putExtra(AlarmEditorActivity.PREFILLED_ALARM_JSON, Json.encodeToString(Alarm.serializer(), alarm))
         }
-    }
-
-    private fun openEditTimer(timer: Timer) {
-        EditTimerDialog(this, timer) {
-            timer.id = it.toInt()
-            startTimer(timer)
-        }
+        startActivity(intent)
+        finish()
     }
 
     private fun startAlarm(alarm: Alarm) {

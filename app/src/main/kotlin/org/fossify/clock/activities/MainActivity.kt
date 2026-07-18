@@ -18,9 +18,7 @@ import org.fossify.clock.extensions.config
 import org.fossify.clock.extensions.getEnabledAlarms
 import org.fossify.clock.extensions.handleFullScreenNotificationsPermission
 import org.fossify.clock.extensions.updateWidgets
-import org.fossify.clock.helpers.INVALID_TIMER_ID
 import org.fossify.clock.helpers.OPEN_TAB
-import org.fossify.clock.helpers.PICK_AUDIO_FILE_INTENT_ID
 import org.fossify.clock.helpers.STOPWATCH_SHORTCUT_ID
 import org.fossify.clock.helpers.STOPWATCH_TOGGLE_ACTION
 import org.fossify.clock.helpers.TABS_COUNT
@@ -32,7 +30,6 @@ import org.fossify.clock.helpers.TAB_STOPWATCH
 import org.fossify.clock.helpers.TAB_STOPWATCH_INDEX
 import org.fossify.clock.helpers.TAB_TIMER
 import org.fossify.clock.helpers.TAB_TIMER_INDEX
-import org.fossify.clock.helpers.TIMER_ID
 import org.fossify.clock.helpers.TOGGLE_STOPWATCH
 import org.fossify.commons.databinding.BottomTablayoutItemBinding
 import org.fossify.commons.extensions.appLaunched
@@ -42,23 +39,26 @@ import org.fossify.commons.extensions.getBottomNavigationBackgroundColor
 import org.fossify.commons.extensions.getProperBackgroundColor
 import org.fossify.commons.extensions.getProperPrimaryColor
 import org.fossify.commons.extensions.getProperTextColor
-import org.fossify.commons.extensions.launchMoreAppsFromUsIntent
 import org.fossify.commons.extensions.onPageChangeListener
 import org.fossify.commons.extensions.onTabSelectionChanged
 import org.fossify.commons.extensions.shortcutManager
-import org.fossify.commons.extensions.storeNewYourAlarmSound
 import org.fossify.commons.extensions.toast
 import org.fossify.commons.extensions.updateBottomTabItemColors
 import org.fossify.commons.extensions.viewBinding
-import org.fossify.commons.helpers.LICENSE_AUTOFITTEXTVIEW
-import org.fossify.commons.helpers.LICENSE_NUMBER_PICKER
-import org.fossify.commons.helpers.LICENSE_RTL
 import org.fossify.commons.helpers.ensureBackgroundThread
-import org.fossify.commons.models.FAQItem
 import java.time.temporal.WeekFields
 import java.util.Locale
 
 class MainActivity : SimpleActivity() {
+    companion object {
+        private val TAB_LABELS = arrayOf(
+            R.string.clock,
+            org.fossify.commons.R.string.alarm,
+            R.string.stopwatch,
+            R.string.timer
+        )
+    }
+
     private var storedTextColor = 0
     private var storedBackgroundColor = 0
     private var storedPrimaryColor = 0
@@ -68,8 +68,6 @@ class MainActivity : SimpleActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         appLaunched(BuildConfig.APPLICATION_ID)
-        setupOptionsMenu()
-        refreshMenuItems()
 
         setupEdgeToEdge(padBottomImeAndSystem = listOf(binding.mainTabsHolder))
 
@@ -96,6 +94,8 @@ class MainActivity : SimpleActivity() {
     override fun onResume() {
         super.onResume()
         setupTopAppBar(binding.mainAppbar, topBarColor = getProperBackgroundColor())
+        // Header always reads "Clock" regardless of the active tab - not per-tab.
+        binding.mainToolbar.title = getString(R.string.clock)
         val configTextColor = getProperTextColor()
         if (storedTextColor != configTextColor) {
             getInactiveTabIndexes(binding.viewPager.currentItem).forEach {
@@ -169,40 +169,10 @@ class MainActivity : SimpleActivity() {
         config.lastUsedViewPagerPage = binding.viewPager.currentItem
     }
 
-    private fun setupOptionsMenu() {
-        binding.mainToolbar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.sort -> when (binding.viewPager.currentItem) {
-                    TAB_ALARM_INDEX -> getViewPagerAdapter()?.showAlarmSortDialog()
-                    TAB_TIMER_INDEX -> getViewPagerAdapter()?.showTimerSortDialog()
-                }
-
-                R.id.more_apps_from_us -> launchMoreAppsFromUsIntent()
-                R.id.settings -> launchSettings()
-                R.id.about -> launchAbout()
-                else -> return@setOnMenuItemClickListener false
-            }
-            return@setOnMenuItemClickListener true
-        }
-    }
-
-    private fun refreshMenuItems() {
-        binding.mainToolbar.menu.apply {
-            findItem(R.id.sort).isVisible = binding.viewPager.currentItem == getTabIndex(TAB_ALARM)
-                    || binding.viewPager.currentItem == getTabIndex(TAB_TIMER)
-            findItem(R.id.more_apps_from_us).isVisible =
-                !resources.getBoolean(org.fossify.commons.R.bool.hide_google_relations)
-        }
-    }
-
     override fun onNewIntent(intent: Intent) {
         if (intent.extras?.containsKey(OPEN_TAB) == true) {
             val tabToOpen = intent.getIntExtra(OPEN_TAB, TAB_CLOCK)
             binding.viewPager.setCurrentItem(getTabIndex(tabToOpen), false)
-            if (tabToOpen == TAB_TIMER) {
-                val timerId = intent.getIntExtra(TIMER_ID, INVALID_TIMER_ID)
-                (binding.viewPager.adapter as ViewPagerAdapter).updateTimerPosition(timerId)
-            }
             if (tabToOpen == TAB_STOPWATCH) {
                 if (intent.getBooleanExtra(TOGGLE_STOPWATCH, false)) {
                     (binding.viewPager.adapter as ViewPagerAdapter).startStopWatch()
@@ -218,24 +188,6 @@ class MainActivity : SimpleActivity() {
         storedPrimaryColor = getProperPrimaryColor()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        super.onActivityResult(requestCode, resultCode, resultData)
-        when {
-            requestCode == PICK_AUDIO_FILE_INTENT_ID && resultCode == RESULT_OK && resultData != null -> {
-                storeNewAlarmSound(resultData)
-            }
-        }
-    }
-
-    private fun storeNewAlarmSound(resultData: Intent) {
-        val newAlarmSound = storeNewYourAlarmSound(resultData)
-
-        when (binding.viewPager.currentItem) {
-            TAB_ALARM_INDEX -> getViewPagerAdapter()?.updateAlarmTabAlarmSound(newAlarmSound)
-            TAB_TIMER_INDEX -> getViewPagerAdapter()?.updateTimerTabAlarmSound(newAlarmSound)
-        }
-    }
-
     fun updateClockTabAlarm() {
         getViewPagerAdapter()?.updateClockTabAlarm()
     }
@@ -247,15 +199,10 @@ class MainActivity : SimpleActivity() {
         binding.viewPager.adapter = viewPagerAdapter
         binding.viewPager.onPageChangeListener {
             binding.mainTabsHolder.getTabAt(it)?.select()
-            refreshMenuItems()
         }
 
         val tabToOpen = intent.getIntExtra(OPEN_TAB, config.defaultTab)
         intent.removeExtra(OPEN_TAB)
-        if (tabToOpen == TAB_TIMER) {
-            val timerId = intent.getIntExtra(TIMER_ID, INVALID_TIMER_ID)
-            viewPagerAdapter.updateTimerPosition(timerId)
-        }
 
         if (tabToOpen == TAB_STOPWATCH) {
             config.toggleStopwatch = intent.getBooleanExtra(TOGGLE_STOPWATCH, false)
@@ -273,20 +220,13 @@ class MainActivity : SimpleActivity() {
             R.drawable.ic_stopwatch_vector,
             R.drawable.ic_hourglass_vector
         )
-        val tabLabels = arrayOf(
-            R.string.clock,
-            org.fossify.commons.R.string.alarm,
-            R.string.stopwatch,
-            R.string.timer
-        )
-
         tabDrawables.forEachIndexed { i, drawableId ->
             binding.mainTabsHolder.newTab()
                 .setCustomView(org.fossify.commons.R.layout.bottom_tablayout_item)
                 .apply tab@{
                     customView?.let { BottomTablayoutItemBinding.bind(it) }?.apply {
                         tabItemIcon.setImageDrawable(getDrawable(drawableId))
-                        tabItemLabel.setText(tabLabels[i])
+                        tabItemLabel.setText(TAB_LABELS[i])
                         AutofitHelper.create(tabItemLabel)
                         binding.mainTabsHolder.addTab(this@tab)
                     }
@@ -300,16 +240,29 @@ class MainActivity : SimpleActivity() {
                     isActive = false,
                     drawableId = getDeselectedTabDrawableIds()[it.position]
                 )
+                applyTabColorOverride(it.customView, isActive = false)
             },
             tabSelectedAction = {
                 binding.viewPager.currentItem = it.position
                 updateBottomTabItemColors(
                     view = it.customView,
                     isActive = true,
-                    drawableId = getSelectedTabDrawableIds()[it.position]
+                    drawableId = getDeselectedTabDrawableIds()[it.position]
                 )
+                applyTabColorOverride(it.customView, isActive = true)
             }
         )
+    }
+
+    // Bottom nav: both states use the same outline icon - only the tint differs. Unselected
+    // tabs are purple (matching the app's outlined-purple "at rest" language elsewhere); the
+    // selected tab is black, so it's unmistakable which tab is active without switching to a
+    // filled icon shape.
+    private fun applyTabColorOverride(view: android.view.View?, isActive: Boolean) {
+        val binding = view?.let { BottomTablayoutItemBinding.bind(it) } ?: return
+        val color = if (isActive) android.graphics.Color.BLACK else getProperPrimaryColor()
+        binding.tabItemIcon.applyColorFilter(color)
+        binding.tabItemLabel.setTextColor(color)
     }
 
     private fun setupTabColors() {
@@ -317,12 +270,14 @@ class MainActivity : SimpleActivity() {
         updateBottomTabItemColors(
             view = activeView,
             isActive = true,
-            drawableId = getSelectedTabDrawableIds()[binding.viewPager.currentItem]
+            drawableId = getDeselectedTabDrawableIds()[binding.viewPager.currentItem]
         )
+        applyTabColorOverride(activeView, isActive = true)
 
         getInactiveTabIndexes(binding.viewPager.currentItem).forEach { index ->
             val inactiveView = binding.mainTabsHolder.getTabAt(index)?.customView
             updateBottomTabItemColors(inactiveView, false, getDeselectedTabDrawableIds()[index])
+            applyTabColorOverride(inactiveView, isActive = false)
         }
 
         binding.mainTabsHolder.getTabAt(binding.viewPager.currentItem)?.select()
@@ -334,70 +289,12 @@ class MainActivity : SimpleActivity() {
         return arrayListOf(0, 1, 2, 3).filter { it != activeIndex }
     }
 
-    private fun getSelectedTabDrawableIds() = arrayOf(
-        R.drawable.ic_clock_filled_vector,
-        R.drawable.ic_alarm_filled_vector,
-        R.drawable.ic_stopwatch_filled_vector,
-        R.drawable.ic_hourglass_filled_vector
-    )
-
     private fun getDeselectedTabDrawableIds() = arrayOf(
         org.fossify.commons.R.drawable.ic_clock_vector,
         R.drawable.ic_alarm_vector,
         R.drawable.ic_stopwatch_vector,
         R.drawable.ic_hourglass_vector
     )
-
-    private fun launchSettings() {
-        startActivity(Intent(applicationContext, SettingsActivity::class.java))
-    }
-
-    private fun launchAbout() {
-        val licenses =
-            LICENSE_NUMBER_PICKER or LICENSE_RTL or LICENSE_AUTOFITTEXTVIEW
-
-        val faqItems = arrayListOf(
-            FAQItem(
-                title = R.string.faq_1_title,
-                text = R.string.faq_1_text
-            ),
-            FAQItem(
-                title = org.fossify.commons.R.string.faq_1_title_commons,
-                text = org.fossify.commons.R.string.faq_1_text_commons
-            ),
-            FAQItem(
-                title = org.fossify.commons.R.string.faq_4_title_commons,
-                text = org.fossify.commons.R.string.faq_4_text_commons
-            ),
-            FAQItem(
-                title = org.fossify.commons.R.string.faq_9_title_commons,
-                text = org.fossify.commons.R.string.faq_9_text_commons
-            )
-        )
-
-        if (!resources.getBoolean(org.fossify.commons.R.bool.hide_google_relations)) {
-            faqItems.add(
-                FAQItem(
-                    title = org.fossify.commons.R.string.faq_2_title_commons,
-                    text = org.fossify.commons.R.string.faq_2_text_commons
-                )
-            )
-            faqItems.add(
-                FAQItem(
-                    title = org.fossify.commons.R.string.faq_6_title_commons,
-                    text = org.fossify.commons.R.string.faq_6_text_commons
-                )
-            )
-        }
-
-        startAboutActivity(
-            appNameId = R.string.app_name,
-            licenseMask = licenses,
-            versionName = BuildConfig.VERSION_NAME,
-            faqItems = faqItems,
-            showFAQBeforeMail = true
-        )
-    }
 
     @Deprecated("Remove this method in future releases")
     private fun migrateFirstDayOfWeek() {

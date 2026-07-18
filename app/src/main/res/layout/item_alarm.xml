@@ -9,8 +9,20 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="@drawable/selector"
+    android:minHeight="@dimen/elderly_row_min_height"
     android:paddingHorizontal="@dimen/activity_margin"
-    android:paddingVertical="@dimen/medium_margin">
+    android:paddingVertical="@dimen/normal_margin">
+
+    <ImageView
+        android:id="@+id/alarm_edit_icon"
+        android:layout_width="@dimen/textview_drawable_size"
+        android:layout_height="@dimen/textview_drawable_size"
+        android:layout_marginEnd="@dimen/normal_margin"
+        android:contentDescription="@string/edit_alarm_action"
+        android:src="@drawable/ic_edit_vector"
+        app:layout_constraintBottom_toBottomOf="@+id/alarm_time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/alarm_time" />
 
     <org.fossify.commons.views.MyTextView
         android:id="@+id/alarm_time"
@@ -20,9 +32,9 @@
         android:fontFeatureSettings="tnum"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textSize="@dimen/alarm_text_size"
-        app:layout_constraintEnd_toStartOf="@id/alarm_switch"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="@dimen/elderly_list_time_text_size"
+        app:layout_constraintEnd_toStartOf="@+id/alarm_toggle_holder"
+        app:layout_constraintStart_toEndOf="@+id/alarm_edit_icon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="07:00" />
 
@@ -30,39 +42,62 @@
         android:id="@+id/alarm_days"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/tiny_margin"
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:paddingHorizontal="@dimen/tiny_margin"
-        android:textSize="@dimen/bigger_text_size"
-        app:layout_constraintEnd_toStartOf="@id/alarm_switch"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/alarm_time"
+        android:textSize="@dimen/elderly_list_secondary_text_size"
+        app:layout_constraintEnd_toStartOf="@+id/alarm_toggle_holder"
+        app:layout_constraintStart_toEndOf="@+id/alarm_edit_icon"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_time"
         tools:text="Mon, Tue, Wed, Thu, Fri" />
 
     <org.fossify.commons.views.MyTextView
         android:id="@+id/alarm_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/tiny_margin"
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:paddingHorizontal="@dimen/tiny_margin"
-        android:textSize="@dimen/bigger_text_size"
-        app:layout_constraintEnd_toStartOf="@id/alarm_switch"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/alarm_days"
+        android:textSize="@dimen/elderly_list_secondary_text_size"
+        app:layout_constraintEnd_toStartOf="@+id/alarm_toggle_holder"
+        app:layout_constraintStart_toEndOf="@+id/alarm_edit_icon"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_days"
         tools:text="Good morning!" />
 
-    <org.fossify.commons.views.MyMaterialSwitch
-        android:id="@+id/alarm_switch"
+    <LinearLayout
+        android:id="@+id/alarm_toggle_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/normal_margin"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/alarm_drag_handle"
-        app:layout_constraintStart_toEndOf="@id/alarm_time"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/alarm_drag_handle"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <org.fossify.commons.views.MyTextView
+            android:id="@+id/alarm_off_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:text="@string/off"
+            android:textSize="@dimen/elderly_body_text_size" />
+
+        <org.fossify.commons.views.MyMaterialSwitch
+            android:id="@+id/alarm_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <org.fossify.commons.views.MyTextView
+            android:id="@+id/alarm_on_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_margin"
+            android:text="@string/on"
+            android:textSize="@dimen/elderly_body_text_size" />
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/alarm_drag_handle"
@@ -73,7 +108,6 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/alarm_switch"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
