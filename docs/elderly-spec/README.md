@@ -40,8 +40,8 @@ backup/export.
 
 ## Status
 
-**Built and live-verified as of 2026-07-18.** All four tabs, the Alarm and
-Add City full-screen editors, and the alarm/timer ring screens are
+**Clock app redesign complete as of 2026-07-18.** All four tabs, the Alarm
+and Add City full-screen editors, and the alarm/timer ring screens are
 implemented and match this spec — see
 [decisions.md](decisions.md#verified-working-live-device-testing-2026-07-18)
 for what's been confirmed on-device.

@@ -8,13 +8,13 @@
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:minHeight="@dimen/elderly_row_min_height"
-    android:paddingHorizontal="@dimen/activity_margin">
+    android:minHeight="@dimen/elderly_row_min_height">
 
     <View
         android:id="@+id/add_time_zone_selector"
         android:layout_width="@dimen/elderly_selector_circle_size"
         android:layout_height="@dimen/elderly_selector_circle_size"
+        android:layout_marginStart="@dimen/activity_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,6 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/normal_margin"
+        android:layout_marginEnd="@dimen/activity_margin"
         android:textSize="@dimen/elderly_list_secondary_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,14 +47,13 @@
 
     <!-- Subtle row separator - a plain per-row view (not a RecyclerView ItemDecoration) so it
          naturally appears between every row, including trailing the last one, with no extra
-         edge-case handling needed. Negative margins cancel out the row root's own
-         paddingHorizontal (activity_margin) so the line reaches the true screen edge on both
-         sides, not just the padded content area. -->
+         edge-case handling needed. The row root has no padding of its own (content views carry
+         their own start/end margins instead), so this reaches the true screen edge with zero
+         margin - ConstraintLayout doesn't reliably let negative margins push past a parent's
+         own padding, so that approach (tried first) didn't actually reach the edge. -->
     <View
         android:layout_width="0dp"
         android:layout_height="@dimen/divider_height"
-        android:layout_marginStart="-16dp"
-        android:layout_marginEnd="-16dp"
         android:background="@color/divider_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
