@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import org.fossify.clock.R
 import org.fossify.clock.activities.SimpleActivity
 import org.fossify.clock.databinding.ItemTimeZoneBinding
 import org.fossify.clock.extensions.getFormattedTime
@@ -91,13 +93,16 @@ class TimeZonesAdapter(activity: SimpleActivity, var timeZones: ArrayList<MyTime
         ItemTimeZoneBinding.bind(view).apply {
             timeZoneEditIcon.applyColorFilter(textColor)
             timeZoneTitle.text = timeZone.title
-            timeZoneTitle.setTextColor(textColor)
+            // Muted, not body ink - docs/elderly-spec/design-tokens.md ("city name ...
+            // Poppins 600, 19px, sub").
+            timeZoneTitle.setTextColor(ContextCompat.getColor(activity, R.color.eb_sub))
 
             timeZoneTime.text = formattedTime
             timeZoneTime.setTextColor(textColor)
 
             timeZoneOffset.text = offsetText
-            timeZoneOffset.setTextColor(textColor)
+            // Accent, not body ink - docs/elderly-spec/design-tokens.md ("offset ... accent").
+            timeZoneOffset.setTextColor(properPrimaryColor)
         }
     }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pressed-state visual indicator, see eb_btn_primary_bg.xml. Shared by Secondary/Ghost -
+     normally transparent, fills solid on press. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/eb_accent" android:state_pressed="true" />
+    <item android:color="@android:color/transparent" />
+</selector>

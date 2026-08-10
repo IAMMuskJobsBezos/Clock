@@ -20,43 +20,87 @@
     <dimen name="reminder_activity_title_size">32sp</dimen>
     <dimen name="reminder_activity_text_size">26sp</dimen>
 
-    <!-- Elderly-scale tokens, see docs/elderly-spec/design-principles.md -->
-    <!-- Primary time/countdown/elapsed displays, autosizes down to the min on smaller screens -->
-    <dimen name="elderly_display_text_size">76sp</dimen>
-    <dimen name="elderly_display_text_size_min">48sp</dimen>
-    <!-- List row primary time (alarm rows, world clock rows) -->
-    <dimen name="elderly_list_time_text_size">32sp</dimen>
-    <!-- List row secondary line (days, city name, date) -->
-    <dimen name="elderly_list_secondary_text_size">20sp</dimen>
-    <!-- Body text floor -->
-    <dimen name="elderly_body_text_size">18sp</dimen>
-    <!-- Button label text -->
-    <dimen name="elderly_button_text_size">20sp</dimen>
-    <!-- Full-width/paired pill buttons -->
-    <dimen name="elderly_button_height">64dp</dimen>
-    <!-- Minimum touch target for any tappable control -->
-    <dimen name="elderly_touch_target_min">56dp</dimen>
-    <!-- Day-of-week chips (S M T W T F S): squares sized to fit all 7 across a ~384dp-wide
-         screen (a more realistic modern-phone baseline than the ultra-conservative 360dp used
-         originally - Emmett asked for bigger squares for thick-fingered users) with a reduced,
-         dedicated row side padding (elderly_day_chip_row_padding, not the standard
-         activity_margin) and the same 8dp gap between chips as before (kept unchanged - "still
-         maintaining good spacing"): 7 * 43dp + 7 * 8dp + 2 * 12dp = 381dp. Padding is now just
-         2dp clearance around the letter (was 8dp) so the glyph fills more of the bigger box. -->
-    <dimen name="elderly_day_chip_size">43dp</dimen>
-    <dimen name="elderly_day_chip_gap">8dp</dimen>
-    <dimen name="elderly_day_chip_radius">9dp</dimen>
-    <dimen name="elderly_day_chip_padding">2dp</dimen>
-    <dimen name="elderly_day_chip_row_padding">12dp</dimen>
-    <!-- List row minimum height (alarm rows, world clock rows) -->
+    <!-- ElderBerry Design System tokens, see docs/elderly-spec/design-tokens.md. Handoff px
+         values are used 1:1 as dp/sp (the reference frame is authored at roughly 1x density). -->
+
+    <!-- Type scale (Poppins unless noted Roboto) -->
+    <dimen name="eb_text_84">84sp</dimen> <!-- Roboto, hero clock -->
+    <dimen name="eb_text_76">76sp</dimen> <!-- Roboto, stopwatch/timer running display -->
+    <dimen name="eb_text_64">64sp</dimen> <!-- Roboto, ringing time -->
+    <dimen name="eb_text_42">42sp</dimen> <!-- Roboto, wheel center cell -->
+    <dimen name="eb_text_32">32sp</dimen> <!-- Roboto, alarm row time -->
+    <dimen name="eb_text_30">30sp</dimen> <!-- Roboto, world-clock row time -->
+    <dimen name="eb_text_28">28sp</dimen> <!-- Roboto, wheel neighbor cells / meridiem -->
+    <dimen name="eb_text_26">26sp</dimen> <!-- Poppins 700, screen title -->
+    <dimen name="eb_text_24">24sp</dimen> <!-- Poppins, section label / chip / repeat label -->
+    <dimen name="eb_text_21">21sp</dimen> <!-- Poppins 600, picker + column label / clock date -->
+    <dimen name="eb_text_20">20sp</dimen> <!-- Poppins, lap label, sheet offset, day-chip hint -->
+    <dimen name="eb_text_19">19sp</dimen> <!-- Poppins 600, city name -->
+    <dimen name="eb_text_18">18sp</dimen> <!-- Poppins, button label, alarm repeat line -->
+    <dimen name="eb_text_17">17sp</dimen> <!-- Poppins 700, on/off labels -->
+    <dimen name="eb_text_16">16sp</dimen> <!-- Poppins 700, unused now, see eb_text_tab_label -->
+    <!-- Tab label size: just the initial/fallback value set in the layout XML before
+         MainActivity.equalizeTabLabelSizes() computes and applies the real size once the tab bar
+         has laid out and the actual per-column width is known (see decisions.md) - so this only
+         shows for a single frame at most. -->
+    <dimen name="eb_text_tab_label">14sp</dimen>
+    <dimen name="eb_text_15">15sp</dimen> <!-- Poppins/Roboto, status bar -->
+
+    <!-- Autosize floors for the primary displays, so small/large accessibility fonts don't clip -->
+    <dimen name="eb_text_84_min">48sp</dimen>
+    <dimen name="eb_text_76_min">44sp</dimen>
+
+    <!-- Spacing scale -->
+    <dimen name="eb_space_6">6dp</dimen>
+    <dimen name="eb_space_8">8dp</dimen>
+    <dimen name="eb_space_10">10dp</dimen>
+    <dimen name="eb_space_12">12dp</dimen>
+    <dimen name="eb_space_14">14dp</dimen>
+    <dimen name="eb_space_16">16dp</dimen>
+    <dimen name="eb_space_18">18dp</dimen>
+    <dimen name="eb_space_20">20dp</dimen>
+    <dimen name="eb_gutter">24dp</dimen> <!-- eb_space_24, screen gutter -->
+    <dimen name="eb_space_26">26dp</dimen>
+    <dimen name="eb_space_32">32dp</dimen>
+    <dimen name="eb_space_44">44dp</dimen>
+
+    <!-- Radii -->
+    <dimen name="eb_radius_pill">100dp</dimen>
+    <dimen name="eb_radius_day_chip">14dp</dimen>
+
+    <!-- Sizes -->
+    <!-- 52dp per the handoff, +4dp top/+4dp bottom (Emmett's explicit call) - see decisions.md. -->
+    <dimen name="eb_button_height">60dp</dimen>
+    <dimen name="eb_toggle_width">74dp</dimen>
+    <dimen name="eb_toggle_height">42dp</dimen>
+    <dimen name="eb_toggle_knob_size">30dp</dimen>
+    <dimen name="eb_toggle_padding">4dp</dimen>
+    <dimen name="eb_day_chip_size">56dp</dimen>
+    <dimen name="eb_day_chip_gap">8dp</dimen>
+    <dimen name="eb_search_height">60dp</dimen>
+    <!-- Widened from the handoff's 176/58dp (Emmett's explicit call) - a bigger per-row drag
+         surface for fat-finger scrolling on the Alarm editor and Timer setup wheels, both of
+         which share WheelPickerView/this dimen so the change applies identically to each. -->
+    <dimen name="eb_wheel_viewport_height">234dp</dimen>
+    <dimen name="eb_wheel_row_height">78dp</dimen>
+    <dimen name="eb_tab_icon_size">32dp</dimen>
+    <dimen name="eb_button_icon_size">20dp</dimen>
+    <dimen name="eb_row_icon_size">22dp</dimen>
+    <dimen name="eb_bell_icon_size">20dp</dimen>
+    <dimen name="eb_selector_dot_size">34dp</dimen>
+    <dimen name="eb_separator_weight">2.5dp</dimen>
+    <dimen name="eb_title_row_height">64dp</dimen>
+    <dimen name="eb_ringing_bell_size">72dp</dimen>
+    <!-- 52dp per the handoff, +4dp top/+4dp bottom (Emmett's explicit call) - see decisions.md. -->
+    <dimen name="eb_ringing_button_height">60dp</dimen>
+    <!-- Add City list: bottom scroll inset so normal scrolling clears the floating ghost button,
+         while clipToPadding=false still lets an intentional overscroll show list rows behind it. -->
+    <dimen name="eb_addcity_list_bottom_inset">100dp</dimen>
+
+    <!-- List row minimum height (alarm rows, world clock rows) - not specced exactly, sized to
+         comfortably contain the two-line row content plus generous tap area. -->
     <dimen name="elderly_row_min_height">96dp</dimen>
-    <!-- Selection indicator circle (Add City rows) - purple outline/fill, same visual
-         language as the alarm day chips. The row itself (elderly_row_min_height) is the
-         touch target, not this circle, so it doesn't need to independently meet the 56dp
-         minimum. -->
-    <dimen name="elderly_selector_circle_size">28dp</dimen>
-    <!-- Ring-screen (alarm firing) huge buttons -->
-    <dimen name="elderly_ring_button_height">96dp</dimen>
+
     <!-- Hour/Minute/Second header label nudge, shared by Stopwatch and Timer's running-state
          header (both sit above a single compact autosized HH:MM:SS-style string, narrower than
          the full-width 3-equal-weight-column header row above it) - shifts each label's

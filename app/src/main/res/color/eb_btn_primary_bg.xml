@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pressed-state visual indicator (Emmett's call, decisions.md): tapping a button inverts its
+     colors so it's unmistakable something happened. eb_bg/eb_accent are already theme-opposite
+     (white/dark-purple in light, dark/light-lavender in dark), so this reads as a true inversion
+     in both themes without separate light/dark overrides. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/eb_bg" android:state_pressed="true" />
+    <item android:color="@color/eb_btn_bg" />
+</selector>

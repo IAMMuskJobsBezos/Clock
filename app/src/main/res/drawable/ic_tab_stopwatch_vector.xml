@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bottom-nav icon (Clock App.dc.html tab bar, "goStopwatch" button): stopwatch face + hand +
+     top button - see docs/elderly-spec/decisions.md. Fixes over the handoff's literal SVG:
+     (1) the handoff draws the center-to-hand tick (M12,14 L12,10) and the button cap
+     (M9,2 L15,2) as two disconnected segments with a gap between them, reading as broken at
+     32dp - now one continuous line from the dial center through the rim up to the button, so
+     it's simultaneously the hand and the crown stem; (2) the handoff's r=8 circle is noticeably
+     narrower than the other three tab icons' glyphs (~16 units wide vs. ~20), reading as visibly
+     smaller in the bar - widened to r=9 (~18-20 units including the stem/button) to match.
+     Tinted at runtime. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M3,14 A9,9 0 1,0 21,14 A9,9 0 1,0 3,14" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M12,14 L12,2" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M8,2 L16,2" />
+</vector>

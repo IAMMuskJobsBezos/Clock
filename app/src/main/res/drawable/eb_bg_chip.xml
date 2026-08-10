@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Next-alarm "gray chip" style, see docs/elderly-spec/design-tokens.md -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <corners android:radius="@dimen/eb_radius_pill" />
+    <solid android:color="@color/eb_chip_bg" />
+
+</shape>

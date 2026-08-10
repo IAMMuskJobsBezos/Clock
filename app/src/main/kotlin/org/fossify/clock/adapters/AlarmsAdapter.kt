@@ -139,8 +139,11 @@ class AlarmsAdapter(
         ItemAlarmBinding.bind(view).apply {
             alarmHolder.isSelected = isSelected
             alarmEditIcon.applyColorFilter(textColor)
-            alarmOffLabel.setTextColor(textColor)
-            alarmOnLabel.setTextColor(textColor)
+            // Sub, not body ink - docs/elderly-spec/design-tokens.md ("Labels Poppins 700 17px
+            // sub").
+            val subColor = androidx.core.content.ContextCompat.getColor(activity, R.color.eb_sub)
+            alarmOffLabel.setTextColor(subColor)
+            alarmOnLabel.setTextColor(subColor)
             alarmDragHandle.beVisibleIf(selectedKeys.isNotEmpty())
             alarmDragHandle.applyColorFilter(textColor)
             alarmDragHandle.setOnTouchListener { _, event ->
@@ -158,14 +161,14 @@ class AlarmsAdapter(
             alarmTime.setTextColor(textColor)
 
             alarmDays.text = getAlarmSelectedDaysString(alarm)
-            alarmDays.setTextColor(textColor)
+            alarmDays.setTextColor(subColor)
 
             alarmLabel.text = alarm.label
             alarmLabel.setTextColor(textColor)
             alarmLabel.beVisibleIf(alarm.label.isNotEmpty())
 
             alarmSwitch.isChecked = alarm.isEnabled
-            styleToggleSwitch(alarmSwitch, properPrimaryColor, backgroundColor)
+            styleToggleSwitch(alarmSwitch)
             alarmSwitch.setOnClickListener {
                 toggleAlarm(binding = this, alarm = alarm)
             }

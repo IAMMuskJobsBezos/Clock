@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Ringing state, docs/elderly-spec/design-tokens.md section 8: plum gradient background
+     (set programmatically in AlarmActivity via AngledGradientDrawable - XML gradients can't do
+     the exact 160deg angle), white bell + time + label, two stacked buttons. -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,59 +9,76 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <org.fossify.commons.views.MyTextView
-        android:id="@+id/reminder_current_time"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:autoSizeMaxTextSize="@dimen/elderly_display_text_size"
-        android:autoSizeMinTextSize="@dimen/elderly_display_text_size_min"
-        android:autoSizeStepGranularity="2sp"
-        android:autoSizeTextType="uniform"
-        android:fontFeatureSettings="tnum"
         android:gravity="center_horizontal"
-        android:maxLines="1"
-        android:textSize="@dimen/elderly_display_text_size"
-        tools:text="7:32 AM" />
+        android:orientation="vertical">
 
-    <org.fossify.commons.views.MyTextView
-        android:id="@+id/reminder_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/reminder_current_time"
-        android:layout_marginTop="@dimen/normal_margin"
-        android:gravity="center_horizontal"
-        android:textSize="@dimen/elderly_list_secondary_text_size"
-        tools:text="7:30 AM Alarm" />
+        <ImageView
+            android:layout_width="@dimen/eb_ringing_bell_size"
+            android:layout_height="@dimen/eb_ringing_bell_size"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_alarm_vector"
+            app:tint="@android:color/white" />
+
+        <org.fossify.commons.views.MyTextView
+            android:id="@+id/reminder_current_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/eb_space_18"
+            android:fontFamily="@font/eb_roboto_medium"
+            android:autoSizeMaxTextSize="@dimen/eb_text_64"
+            android:autoSizeMinTextSize="@dimen/eb_text_76_min"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
+            android:fontFeatureSettings="tnum"
+            android:gravity="center_horizontal"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/eb_text_64"
+            tools:text="7:32 AM" />
+
+        <org.fossify.commons.views.MyTextView
+            android:id="@+id/reminder_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/eb_space_18"
+            android:alpha="0.9"
+            android:fontFamily="@font/eb_poppins_semibold"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/eb_text_24"
+            tools:text="Alarm" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/reminder_buttons_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginHorizontal="@dimen/activity_margin"
-        android:layout_marginVertical="@dimen/big_margin"
+        android:layout_marginHorizontal="@dimen/eb_gutter"
+        android:layout_marginTop="@dimen/eb_space_26"
+        android:layout_marginBottom="@dimen/eb_space_18"
         android:orientation="vertical">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/reminder_snooze"
-            style="@style/ElderlyButton.Secondary"
+            style="@style/ElderlyButton.Ringing.Snooze"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/normal_margin"
-            android:minHeight="@dimen/elderly_ring_button_height"
-            android:textSize="@dimen/elderly_button_text_size"
+            android:layout_marginBottom="@dimen/eb_space_14"
             app:icon="@drawable/ic_snooze_vector"
             tools:text="Snooze — 10 minutes" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/reminder_dismiss"
-            style="@style/ElderlyButton.Primary"
+            style="@style/ElderlyButton.Ringing.Stop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/elderly_ring_button_height"
             android:text="@string/stop_alarm"
-            android:textSize="@dimen/elderly_button_text_size"
             app:icon="@drawable/ic_check_vector" />
 
     </LinearLayout>

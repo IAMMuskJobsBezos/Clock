@@ -2,35 +2,110 @@
 
     <style name="AppTheme" parent="AppTheme.Base"/>
 
-    <!-- Elderly-scale full-width/paired pill buttons, see docs/elderly-spec/design-principles.md -->
+    <!-- Title row: Poppins 700 26sp, left-aligned, see docs/elderly-spec/design-tokens.md.
+         Same name as the Commons default so the app module's copy wins at merge time. -->
+    <style name="AppTheme.ActionBar.TitleTextStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@color/eb_title_ink</item>
+        <item name="android:textSize">@dimen/eb_text_26</item>
+        <item name="android:fontFamily">@font/eb_poppins_bold</item>
+    </style>
+
+    <!-- ElderBerry pill buttons, see docs/elderly-spec/design-tokens.md. No ripple, no
+         elevation/shadow animation on press (Emmett's explicit call) - the only feedback is the
+         instant pressed-state color inversion set per variant below, not an animated effect. -->
     <style name="ElderlyButton" parent="Widget.MaterialComponents.Button">
-        <item name="android:minHeight">@dimen/elderly_button_height</item>
-        <item name="android:textSize">@dimen/elderly_button_text_size</item>
+        <item name="android:minHeight">@dimen/eb_button_height</item>
+        <item name="android:textSize">@dimen/eb_text_18</item>
+        <item name="android:fontFamily">@font/eb_poppins_semibold</item>
         <item name="android:textAllCaps">false</item>
-        <item name="cornerRadius">@dimen/material_dialog_corner_radius</item>
+        <item name="cornerRadius">@dimen/eb_radius_pill</item>
         <item name="iconGravity">textStart</item>
-        <item name="iconPadding">@dimen/normal_margin</item>
+        <item name="iconPadding">@dimen/eb_space_10</item>
+        <item name="iconSize">@dimen/eb_button_icon_size</item>
+        <item name="android:stateListAnimator">@null</item>
     </style>
 
-    <!-- Primary/confirming action: Start, Save, Add, Stop Alarm -->
+    <!-- Primary/confirming action: Start, Save, Add, Stop Alarm - filled plum. backgroundTint/
+         textColor/iconTint point at pressed-state ColorStateLists (eb_btn_primary_*) that invert
+         the colors on tap - a visual "yes, that registered" cue, Emmett's explicit call. See
+         decisions.md. -->
     <style name="ElderlyButton.Primary">
-        <item name="backgroundTint">?attr/colorPrimary</item>
-        <item name="android:textColor">?attr/colorOnPrimary</item>
-        <item name="iconTint">?attr/colorOnPrimary</item>
+        <item name="backgroundTint">@color/eb_btn_primary_bg</item>
+        <item name="android:textColor">@color/eb_btn_primary_fg</item>
+        <item name="iconTint">@color/eb_btn_primary_fg</item>
+        <item name="rippleColor">@android:color/transparent</item>
     </style>
 
-    <!-- Secondary/leaving action: Cancel, Reset, Snooze -->
+    <!-- Secondary/leaving action: Cancel, Reset, Lap, day chips - plum outline (default choice
+         of the handoff's secondary-button styles table). Pressed state inverts to a filled plum
+         pill, see eb_btn_outline_bg/fg. -->
     <style name="ElderlyButton.Secondary" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:minHeight">@dimen/elderly_button_height</item>
-        <item name="android:textSize">@dimen/elderly_button_text_size</item>
+        <item name="android:minHeight">@dimen/eb_button_height</item>
+        <item name="android:textSize">@dimen/eb_text_18</item>
+        <item name="android:fontFamily">@font/eb_poppins_semibold</item>
         <item name="android:textAllCaps">false</item>
-        <item name="cornerRadius">@dimen/material_dialog_corner_radius</item>
+        <item name="cornerRadius">@dimen/eb_radius_pill</item>
         <item name="iconGravity">textStart</item>
-        <item name="iconPadding">@dimen/normal_margin</item>
-        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="iconPadding">@dimen/eb_space_10</item>
+        <item name="iconSize">@dimen/eb_button_icon_size</item>
+        <item name="strokeColor">@color/eb_accent</item>
         <item name="strokeWidth">2dp</item>
-        <item name="android:textColor">?attr/colorPrimary</item>
-        <item name="iconTint">?attr/colorPrimary</item>
+        <item name="android:textColor">@color/eb_btn_outline_fg</item>
+        <item name="iconTint">@color/eb_btn_outline_fg</item>
+        <item name="backgroundTint">@color/eb_btn_outline_bg</item>
+        <item name="rippleColor">@android:color/transparent</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <!-- Add City: transparent/ghost so the world-clock list can show through behind it instead
+         of sitting on a solid fill - Emmett's explicit call, overriding the handoff's filled
+         primary-button spec for this one control. Pressed state inverts the same way Secondary
+         does. See decisions.md. -->
+    <style name="ElderlyButton.Ghost" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:minHeight">@dimen/eb_button_height</item>
+        <item name="android:textSize">@dimen/eb_text_18</item>
+        <item name="android:fontFamily">@font/eb_poppins_semibold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">@dimen/eb_radius_pill</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/eb_space_10</item>
+        <item name="iconSize">@dimen/eb_button_icon_size</item>
+        <item name="strokeColor">@color/eb_accent</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:textColor">@color/eb_btn_outline_fg</item>
+        <item name="iconTint">@color/eb_btn_outline_fg</item>
+        <item name="backgroundTint">@color/eb_btn_outline_bg</item>
+        <item name="rippleColor">@android:color/transparent</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <!-- Ring-screen buttons: same shell, sized per docs/elderly-spec/ring-screens.md -->
+    <style name="ElderlyButton.Ringing" parent="ElderlyButton">
+        <item name="android:minHeight">@dimen/eb_ringing_button_height</item>
+    </style>
+
+    <style name="ElderlyButton.Ringing.Stop">
+        <item name="backgroundTint">@color/eb_btn_ringing_stop_bg</item>
+        <item name="android:textColor">@color/eb_btn_ringing_stop_fg</item>
+        <item name="iconTint">@color/eb_btn_ringing_stop_fg</item>
+    </style>
+
+    <style name="ElderlyButton.Ringing.Snooze" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:minHeight">@dimen/eb_ringing_button_height</item>
+        <item name="android:textSize">@dimen/eb_text_18</item>
+        <item name="android:fontFamily">@font/eb_poppins_semibold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">@dimen/eb_radius_pill</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/eb_space_10</item>
+        <item name="iconSize">@dimen/eb_button_icon_size</item>
+        <item name="strokeColor">@android:color/white</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:textColor">@color/eb_btn_ringing_snooze_fg</item>
+        <item name="iconTint">@color/eb_btn_ringing_snooze_fg</item>
+        <item name="backgroundTint">@color/eb_btn_ringing_snooze_bg</item>
+        <item name="rippleColor">@android:color/transparent</item>
+        <item name="android:stateListAnimator">@null</item>
     </style>
 
 </resources>

@@ -14,17 +14,16 @@
         android:id="@+id/time_zone_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/elderly_row_min_height"
-        android:paddingHorizontal="@dimen/activity_margin"
-        android:paddingVertical="@dimen/normal_margin">
+        android:minHeight="@dimen/elderly_row_min_height">
 
         <ImageView
             android:id="@+id/time_zone_edit_icon"
-            android:layout_width="@dimen/textview_drawable_size"
-            android:layout_height="@dimen/textview_drawable_size"
-            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_width="@dimen/eb_row_icon_size"
+            android:layout_height="@dimen/eb_row_icon_size"
+            android:layout_marginEnd="@dimen/eb_space_16"
             android:contentDescription="@string/edit_alarm_action"
             android:src="@drawable/ic_edit_vector"
+            app:tint="@color/eb_text"
             app:layout_constraintBottom_toBottomOf="@+id/time_zone_time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/time_zone_time" />
@@ -33,11 +32,14 @@
             android:id="@+id/time_zone_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/eb_space_18"
             android:ellipsize="end"
+            android:fontFamily="@font/eb_roboto_medium"
             android:fontFeatureSettings="tnum"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textSize="@dimen/elderly_list_time_text_size"
+            android:textColor="@color/eb_text"
+            android:textSize="@dimen/eb_text_30"
             app:layout_constraintEnd_toStartOf="@+id/time_zone_offset"
             app:layout_constraintStart_toEndOf="@+id/time_zone_edit_icon"
             app:layout_constraintTop_toTopOf="parent"
@@ -48,10 +50,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
+            android:fontFamily="@font/eb_poppins_bold"
             android:gravity="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textSize="@dimen/elderly_list_secondary_text_size"
+            android:textColor="@color/eb_accent"
+            android:textSize="@dimen/eb_text_19"
             app:layout_constraintBaseline_toBaselineOf="@+id/time_zone_time"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="+3hr" />
@@ -60,14 +64,28 @@
             android:id="@+id/time_zone_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_margin"
+            android:layout_marginTop="@dimen/eb_space_6"
             android:ellipsize="end"
+            android:fontFamily="@font/eb_poppins_semibold"
             android:maxLines="1"
-            android:textSize="@dimen/elderly_list_secondary_text_size"
+            android:textColor="@color/eb_sub"
+            android:textSize="@dimen/eb_text_19"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/time_zone_time"
             app:layout_constraintTop_toBottomOf="@+id/time_zone_time"
             tools:text="Monterey, California" />
+
+        <!-- Anchored below the last content view (not parent-bottom, which would clip to the
+             parent's own padding and sit flush against the content with no gap) so the divider
+             sits equidistant between this row's content and the next row's - see decisions.md. -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/eb_separator_weight"
+            android:layout_marginTop="@dimen/eb_space_18"
+            android:background="@color/eb_line"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_zone_title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

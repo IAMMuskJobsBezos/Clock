@@ -4,86 +4,95 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/timer_fragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/eb_bg">
 
     <!-- Setup state: no timer running, wheel picker + Start Timer -->
     <LinearLayout
         android:id="@+id/timer_setup_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/eb_gutter">
 
+        <!-- Same column structure/padding as timer_running_header below (not just visually
+             similar - identical paddingStart/End nudges) so a label's on-screen X position is
+             bit-for-bit the same in both states. The Start Timer transition then never needs to
+             move these labels at all - see TimerFragment.playStartTransition() / decisions.md. -->
         <LinearLayout
+            android:id="@+id/timer_setup_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/big_margin"
+            android:layout_marginTop="@dimen/eb_space_10"
             android:gravity="center"
             android:orientation="horizontal">
 
             <org.fossify.commons.views.MyTextView
+                android:id="@+id/timer_setup_label_hour"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/eb_poppins_semibold"
                 android:gravity="center"
+                android:paddingStart="@dimen/elderly_time_header_hour_padding_start"
+                android:paddingEnd="0dp"
                 android:text="@string/hour"
-                android:textSize="@dimen/elderly_body_text_size" />
+                android:textColor="@color/eb_sub"
+                android:textSize="@dimen/eb_text_21" />
 
             <org.fossify.commons.views.MyTextView
+                android:id="@+id/timer_setup_label_minute"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/eb_poppins_semibold"
                 android:gravity="center"
+                android:paddingStart="0dp"
+                android:paddingEnd="@dimen/elderly_time_header_minute_padding_end"
                 android:text="@string/minute"
-                android:textSize="@dimen/elderly_body_text_size" />
+                android:textColor="@color/eb_sub"
+                android:textSize="@dimen/eb_text_21" />
 
             <org.fossify.commons.views.MyTextView
+                android:id="@+id/timer_setup_label_second"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/eb_poppins_semibold"
                 android:gravity="center"
+                android:paddingStart="0dp"
+                android:paddingEnd="@dimen/elderly_time_header_second_padding_end"
                 android:text="@string/second"
-                android:textSize="@dimen/elderly_body_text_size" />
+                android:textColor="@color/eb_sub"
+                android:textSize="@dimen/eb_text_21" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/timer_wheel_row"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/eb_wheel_viewport_height"
+            android:layout_marginTop="@dimen/eb_space_6"
             android:gravity="center"
             android:orientation="horizontal">
 
-            <com.shawnlin.numberpicker.NumberPicker
+            <org.fossify.clock.views.WheelPickerView
                 android:id="@+id/timer_setup_hour_picker"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:np_formatter="%02d"
-                app:np_max="23"
-                app:np_min="0"
-                app:np_selectedTextSize="@dimen/elderly_list_time_text_size"
-                app:np_textSize="@dimen/elderly_body_text_size" />
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
-            <com.shawnlin.numberpicker.NumberPicker
+            <org.fossify.clock.views.WheelPickerView
                 android:id="@+id/timer_setup_minute_picker"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:np_formatter="%02d"
-                app:np_max="59"
-                app:np_min="0"
-                app:np_selectedTextSize="@dimen/elderly_list_time_text_size"
-                app:np_textSize="@dimen/elderly_body_text_size" />
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
-            <com.shawnlin.numberpicker.NumberPicker
+            <org.fossify.clock.views.WheelPickerView
                 android:id="@+id/timer_setup_second_picker"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:np_formatter="%02d"
-                app:np_max="59"
-                app:np_min="0"
-                app:np_selectedTextSize="@dimen/elderly_list_time_text_size"
-                app:np_textSize="@dimen/elderly_body_text_size" />
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -97,8 +106,8 @@
             style="@style/ElderlyButton.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/activity_margin"
-            android:layout_marginVertical="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/eb_space_12"
+            android:layout_marginBottom="@dimen/eb_space_18"
             android:text="@string/start_timer"
             app:icon="@drawable/ic_play_vector" />
 
@@ -110,47 +119,58 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingHorizontal="@dimen/eb_gutter"
         android:visibility="gone"
         tools:visibility="visible">
 
         <!-- Nudged via asymmetric padding to sit closer over the compact countdown string's
              digit groups - shared values with Stopwatch's header, see dimens.xml. -->
         <LinearLayout
+            android:id="@+id/timer_running_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/big_margin"
+            android:layout_marginTop="@dimen/eb_space_10"
             android:gravity="center"
             android:orientation="horizontal">
 
             <org.fossify.commons.views.MyTextView
+                android:id="@+id/timer_running_label_hour"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/eb_poppins_semibold"
                 android:gravity="center"
                 android:paddingStart="@dimen/elderly_time_header_hour_padding_start"
                 android:paddingEnd="0dp"
                 android:text="@string/hour"
-                android:textSize="@dimen/elderly_body_text_size" />
+                android:textColor="@color/eb_sub"
+                android:textSize="@dimen/eb_text_21" />
 
             <org.fossify.commons.views.MyTextView
+                android:id="@+id/timer_running_label_minute"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/eb_poppins_semibold"
                 android:gravity="center"
                 android:paddingStart="0dp"
                 android:paddingEnd="@dimen/elderly_time_header_minute_padding_end"
                 android:text="@string/minute"
-                android:textSize="@dimen/elderly_body_text_size" />
+                android:textColor="@color/eb_sub"
+                android:textSize="@dimen/eb_text_21" />
 
             <org.fossify.commons.views.MyTextView
+                android:id="@+id/timer_running_label_second"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/eb_poppins_semibold"
                 android:gravity="center"
                 android:paddingStart="0dp"
                 android:paddingEnd="@dimen/elderly_time_header_second_padding_end"
                 android:text="@string/second"
-                android:textSize="@dimen/elderly_body_text_size" />
+                android:textColor="@color/eb_sub"
+                android:textSize="@dimen/eb_text_21" />
 
         </LinearLayout>
 
@@ -158,15 +178,17 @@
             android:id="@+id/timer_countdown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_margin"
-            android:autoSizeMaxTextSize="@dimen/elderly_display_text_size"
-            android:autoSizeMinTextSize="@dimen/elderly_display_text_size_min"
+            android:layout_marginTop="@dimen/eb_space_6"
+            android:fontFamily="@font/eb_roboto_medium"
+            android:autoSizeMaxTextSize="@dimen/eb_text_76"
+            android:autoSizeMinTextSize="@dimen/eb_text_76_min"
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
             android:fontFeatureSettings="tnum"
             android:gravity="center_horizontal"
             android:maxLines="1"
-            android:textSize="@dimen/elderly_display_text_size"
+            android:textColor="@color/eb_display_ink"
+            android:textSize="@dimen/eb_text_76"
             tools:text="3:11:06" />
 
         <View
@@ -175,10 +197,11 @@
             android:layout_weight="1" />
 
         <LinearLayout
+            android:id="@+id/timer_running_buttons_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/activity_margin"
-            android:layout_marginVertical="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/eb_space_12"
+            android:layout_marginBottom="@dimen/eb_space_18"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
@@ -186,7 +209,7 @@
                 style="@style/ElderlyButton.Secondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/eb_space_14"
                 android:layout_weight="1"
                 android:text="@string/reset"
                 app:icon="@drawable/ic_restart_alt_vector" />

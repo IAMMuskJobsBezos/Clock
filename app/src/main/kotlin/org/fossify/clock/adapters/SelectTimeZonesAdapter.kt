@@ -88,7 +88,9 @@ class SelectTimeZonesAdapter(val activity: SimpleActivity, var timeZones: ArrayL
                 addTimeZoneTitle.text = myTimeZone.title
                 addTimeZoneTitle.setTextColor(textColor)
                 addTimeZoneOffset.text = getOffsetText(myTimeZone.zoneName)
-                addTimeZoneOffset.setTextColor(textColor)
+                // Accent, not body ink - see docs/elderly-spec/design-tokens.md ("Offset:
+                // Poppins 700, 20px, accent").
+                addTimeZoneOffset.setTextColor(primaryColor)
 
                 addTimeZoneHolder.setOnClickListener {
                     viewClicked(myTimeZone)

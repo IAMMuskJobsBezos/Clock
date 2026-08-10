@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Replaces Commons' stock bottom_tablayout_item.xml: handoff spec is icon 32dp, 6dp gap,
+     label 16sp/700 Poppins, 8dp padding above/below the icon+label stack (Clock App.dc.html tab
+     bar: "gap:6px;padding:8px 0;") - see docs/elderly-spec/decisions.md. Keeps the same ids/
+     view types as Commons' layout so BottomTablayoutItemBinding / updateBottomTabItemColors
+     still bind and work unchanged. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tab_item_holder"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingVertical="@dimen/eb_space_8">
+
+    <ImageView
+        android:id="@+id/tab_item_icon"
+        android:layout_width="@dimen/eb_tab_icon_size"
+        android:layout_height="@dimen/eb_tab_icon_size"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="fitCenter"
+        tools:src="@drawable/ic_tab_clock_vector" />
+
+    <TextView
+        android:id="@+id/tab_item_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/eb_space_6"
+        android:fontFamily="@font/eb_poppins_bold"
+        android:gravity="center_horizontal"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:textSize="@dimen/eb_text_tab_label"
+        tools:text="Clock" />
+
+</LinearLayout>

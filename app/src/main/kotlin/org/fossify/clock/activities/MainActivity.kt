@@ -8,7 +8,6 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.core.graphics.drawable.toDrawable
-import me.grantland.widget.AutofitHelper
 import org.fossify.clock.BuildConfig
 import org.fossify.clock.R
 import org.fossify.clock.adapters.ViewPagerAdapter
@@ -35,7 +34,6 @@ import org.fossify.commons.databinding.BottomTablayoutItemBinding
 import org.fossify.commons.extensions.appLaunched
 import org.fossify.commons.extensions.applyColorFilter
 import org.fossify.commons.extensions.convertToBitmap
-import org.fossify.commons.extensions.getBottomNavigationBackgroundColor
 import org.fossify.commons.extensions.getProperBackgroundColor
 import org.fossify.commons.extensions.getProperPrimaryColor
 import org.fossify.commons.extensions.getProperTextColor
@@ -94,8 +92,7 @@ class MainActivity : SimpleActivity() {
     override fun onResume() {
         super.onResume()
         setupTopAppBar(binding.mainAppbar, topBarColor = getProperBackgroundColor())
-        // Header always reads "Clock" regardless of the active tab - not per-tab.
-        binding.mainToolbar.title = getString(R.string.clock)
+        updateToolbarTitle(binding.viewPager.currentItem)
         val configTextColor = getProperTextColor()
         if (storedTextColor != configTextColor) {
             getInactiveTabIndexes(binding.viewPager.currentItem).forEach {
@@ -182,6 +179,12 @@ class MainActivity : SimpleActivity() {
         super.onNewIntent(intent)
     }
 
+    // Title row reads the active tab's own name (decision #16, revised) rather than a constant
+    // "Clock" - see docs/elderly-spec/decisions.md.
+    private fun updateToolbarTitle(tabIndex: Int) {
+        binding.mainToolbar.title = getString(TAB_LABELS[tabIndex])
+    }
+
     private fun storeStateVariables() {
         storedTextColor = getProperTextColor()
         storedBackgroundColor = getProperBackgroundColor()
@@ -199,6 +202,7 @@ class MainActivity : SimpleActivity() {
         binding.viewPager.adapter = viewPagerAdapter
         binding.viewPager.onPageChangeListener {
             binding.mainTabsHolder.getTabAt(it)?.select()
+            updateToolbarTitle(it)
         }
 
         val tabToOpen = intent.getIntExtra(OPEN_TAB, config.defaultTab)
@@ -215,23 +219,28 @@ class MainActivity : SimpleActivity() {
     private fun setupTabs() {
         binding.mainTabsHolder.removeAllTabs()
         val tabDrawables = arrayOf(
-            R.drawable.ic_clock_vector,
-            R.drawable.ic_alarm_vector,
-            R.drawable.ic_stopwatch_vector,
-            R.drawable.ic_hourglass_vector
+            R.drawable.ic_tab_clock_vector,
+            R.drawable.ic_tab_alarm_vector,
+            R.drawable.ic_tab_stopwatch_vector,
+            R.drawable.ic_tab_timer_vector
         )
         tabDrawables.forEachIndexed { i, drawableId ->
             binding.mainTabsHolder.newTab()
-                .setCustomView(org.fossify.commons.R.layout.bottom_tablayout_item)
+                .setCustomView(R.layout.tab_item_bottom_nav)
                 .apply tab@{
                     customView?.let { BottomTablayoutItemBinding.bind(it) }?.apply {
                         tabItemIcon.setImageDrawable(getDrawable(drawableId))
+                        // No AutofitHelper - it shrinks each label to fit its own column
+                        // independently, so "Stopwatch" (the longest word) renders smaller than
+                        // the other three - an inconsistent-looking size mismatch. Sizing is
+                        // done once for all four together instead, see equalizeTabLabelSizes().
                         tabItemLabel.setText(TAB_LABELS[i])
-                        AutofitHelper.create(tabItemLabel)
                         binding.mainTabsHolder.addTab(this@tab)
                     }
                 }
         }
+
+        binding.mainTabsHolder.post { equalizeTabLabelSizes() }
 
         binding.mainTabsHolder.onTabSelectionChanged(
             tabUnselectedAction = {
@@ -254,13 +263,56 @@ class MainActivity : SimpleActivity() {
         )
     }
 
-    // Bottom nav: both states use the same outline icon - only the tint differs. Unselected
-    // tabs are purple (matching the app's outlined-purple "at rest" language elsewhere); the
-    // selected tab is black, so it's unmistakable which tab is active without switching to a
-    // filled icon shape.
+    // Picks one text size that (a) every one of the four tab labels fits on a single line at,
+    // and (b) all four render at identically - rather than a hardcoded guess (16sp clipped
+    // "Stopwatch" on-device; a smaller hardcoded guess still risks clipping on a narrower/denser
+    // screen) or per-label autofit (shrinks only "Stopwatch", the longest word, producing a
+    // visible size mismatch against the other three - see decisions.md). Runs after the tab bar
+    // has laid out once, so the real per-column width is known rather than assumed.
+    private fun equalizeTabLabelSizes() {
+        val tabsHolder = binding.mainTabsHolder
+        val tabCount = tabsHolder.tabCount
+        if (tabCount == 0) {
+            return
+        }
+
+        // Each customView's *own* laid-out width, not tabsHolder.width / tabCount - Material's
+        // TabLayout reserves its own internal per-tab padding around the custom view even with
+        // tabMinWidth=0dp, so the naive even split overestimates how much room text actually
+        // has (this is what let "Stopwatch" clip before). customView.width is the true
+        // allocated slot, post-layout.
+        val columnWidths = (0 until tabCount).mapNotNull { tabsHolder.getTabAt(it)?.customView?.width }
+        if (columnWidths.any { it == 0 }) {
+            return
+        }
+
+        val referenceSp = 16f
+        val referencePx = referenceSp * resources.displayMetrics.scaledDensity
+        val measurePaint = android.graphics.Paint().apply {
+            typeface = androidx.core.content.res.ResourcesCompat.getFont(this@MainActivity, R.font.eb_poppins_bold)
+            textSize = referencePx
+        }
+
+        val safetyMargin = 0.97f // small gap so text never quite touches the column edge
+        val tightestRatio = TAB_LABELS.indices.minOf { i ->
+            val measuredWidth = measurePaint.measureText(getString(TAB_LABELS[i]))
+            (columnWidths[i] * safetyMargin) / measuredWidth
+        }.coerceAtMost(1f)
+
+        val finalSp = (referenceSp * tightestRatio).coerceAtLeast(11f)
+        for (i in 0 until tabCount) {
+            val customView = tabsHolder.getTabAt(i)?.customView ?: continue
+            BottomTablayoutItemBinding.bind(customView).tabItemLabel
+                .setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, finalSp)
+        }
+    }
+
+    // Bottom nav: both states use the same outline icon - only the tint differs (decision #18,
+    // revised). Active tab is purple (eb_tab_on), inactive tabs are gray (eb_tab_off).
     private fun applyTabColorOverride(view: android.view.View?, isActive: Boolean) {
         val binding = view?.let { BottomTablayoutItemBinding.bind(it) } ?: return
-        val color = if (isActive) android.graphics.Color.BLACK else getProperPrimaryColor()
+        val colorRes = if (isActive) R.color.eb_tab_on else R.color.eb_tab_off
+        val color = androidx.core.content.ContextCompat.getColor(this, colorRes)
         binding.tabItemIcon.applyColorFilter(color)
         binding.tabItemLabel.setTextColor(color)
     }
@@ -281,8 +333,7 @@ class MainActivity : SimpleActivity() {
         }
 
         binding.mainTabsHolder.getTabAt(binding.viewPager.currentItem)?.select()
-        val bottomBarColor = getBottomNavigationBackgroundColor()
-        binding.mainTabsHolder.setBackgroundColor(bottomBarColor)
+        binding.mainTabsHolder.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, R.color.eb_bg))
     }
 
     private fun getInactiveTabIndexes(activeIndex: Int): List<Int> {
@@ -290,10 +341,10 @@ class MainActivity : SimpleActivity() {
     }
 
     private fun getDeselectedTabDrawableIds() = arrayOf(
-        org.fossify.commons.R.drawable.ic_clock_vector,
-        R.drawable.ic_alarm_vector,
-        R.drawable.ic_stopwatch_vector,
-        R.drawable.ic_hourglass_vector
+        R.drawable.ic_tab_clock_vector,
+        R.drawable.ic_tab_alarm_vector,
+        R.drawable.ic_tab_stopwatch_vector,
+        R.drawable.ic_tab_timer_vector
     )
 
     @Deprecated("Remove this method in future releases")

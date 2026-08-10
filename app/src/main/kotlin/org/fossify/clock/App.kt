@@ -33,6 +33,7 @@ class App : FossifyApp(), LifecycleObserver {
 
     override fun onCreate() {
         super.onCreate()
+        config.applyElderBerryTheme()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         EventBus.getDefault().register(this)
     }
@@ -147,5 +148,11 @@ class App : FossifyApp(), LifecycleObserver {
                 }
             }
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // Re-resolve the palette so a light/dark switch is picked up without a relaunch.
+        config.applyElderBerryTheme()
     }
 }

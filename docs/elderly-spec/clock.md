@@ -8,8 +8,8 @@ Wireframes: [`clock-main-a`](wireframes/clock-main-a.png),
 
 Top-to-bottom:
 
-1. **Header** — static app-section label "Clock" (this label doesn't change
-   per tab anywhere in the app — see [design-principles.md](design-principles.md)).
+1. **Header** — static label "Clock" for this tab (the label changes per
+   tab — see [design-principles.md](design-principles.md)).
 2. **Local time block** — dominant element:
    - Time, e.g. **9:45 AM** (largest text in the app).
    - Full date below: "Monday, May 11".
@@ -30,7 +30,7 @@ Top-to-bottom:
 No back arrow in the header (decision #16) — leave via Cancel or the system
 back gesture.
 
-1. Header "Clock" (static, same as every screen).
+1. Header "Add City".
 2. **Search field** — plain grey rounded field, no outline/border, hint text
    "Search for a city" sitting inside as an ordinary placeholder (not a
    Material floating label on the border). Sourced from the **full IANA time

@@ -4,12 +4,12 @@
     android:shape="oval">
 
     <stroke
-        android:width="2dp"
+        android:width="1.5dp"
         android:color="@android:color/white" />
 
     <solid android:color="@android:color/transparent" />
 
     <size
-        android:width="@dimen/elderly_selector_circle_size"
-        android:height="@dimen/elderly_selector_circle_size" />
+        android:width="@dimen/eb_selector_dot_size"
+        android:height="@dimen/eb_selector_dot_size" />
 </shape>

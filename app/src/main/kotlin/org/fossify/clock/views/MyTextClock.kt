@@ -11,7 +11,8 @@ import org.fossify.clock.extensions.config
 import org.fossify.commons.extensions.applyFontToTextView
 import java.text.DateFormatSymbols
 
-private const val AM_PM_SCALE = 0.4f
+// 28sp meridiem over an 84sp hero time, per docs/elderly-spec/design-tokens.md.
+private const val AM_PM_SCALE = 28f / 84f
 
 class MyTextClock @JvmOverloads constructor(
     context: Context,

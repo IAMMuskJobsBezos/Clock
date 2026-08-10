@@ -9,13 +9,15 @@
     <org.fossify.commons.views.MyAppBarLayout
         android:id="@+id/edit_alarm_appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/edit_alarm_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/color_primary"
+            android:layout_height="@dimen/eb_title_row_height"
+            android:background="@color/eb_bg"
+            android:paddingHorizontal="@dimen/eb_space_8"
             app:title="@string/alarm"
             app:titleTextAppearance="@style/AppTheme.ActionBar.TitleTextStyle" />
 
@@ -25,6 +27,7 @@
         android:id="@+id/edit_alarm_content_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/eb_bg"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <androidx.core.widget.NestedScrollView
@@ -40,13 +43,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/big_margin">
+            android:paddingHorizontal="@dimen/eb_gutter"
+            android:paddingBottom="@dimen/eb_gutter">
 
             <!-- Wheel column headers -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginTop="@dimen/eb_space_10"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -55,67 +59,62 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/eb_poppins_semibold"
                     android:gravity="center"
                     android:text="@string/hour"
-                    android:textSize="@dimen/elderly_body_text_size" />
+                    android:textColor="@color/eb_sub"
+                    android:textSize="@dimen/eb_text_21" />
 
                 <org.fossify.commons.views.MyTextView
                     android:id="@+id/edit_alarm_minute_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/eb_poppins_semibold"
                     android:gravity="center"
                     android:text="@string/minute"
-                    android:textSize="@dimen/elderly_body_text_size" />
+                    android:textColor="@color/eb_sub"
+                    android:textSize="@dimen/eb_text_21" />
 
                 <org.fossify.commons.views.MyTextView
                     android:id="@+id/edit_alarm_ampm_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/eb_poppins_semibold"
                     android:gravity="center"
                     android:text="@string/am_pm"
-                    android:textSize="@dimen/elderly_body_text_size" />
+                    android:textColor="@color/eb_sub"
+                    android:textSize="@dimen/eb_text_21" />
 
             </LinearLayout>
 
-            <!-- Wheels -->
+            <!-- Wheels: the conveyor picker, docs/elderly-spec/design-tokens.md ("The Picker
+                 Wheel"). -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/eb_wheel_viewport_height"
+                android:layout_marginTop="@dimen/eb_space_6"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <com.shawnlin.numberpicker.NumberPicker
+                <org.fossify.clock.views.WheelPickerView
                     android:id="@+id/edit_alarm_hour_picker"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:np_formatter="%02d"
-                    app:np_selectedTextSize="@dimen/elderly_list_time_text_size"
-                    app:np_textSize="@dimen/elderly_body_text_size" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
-                <com.shawnlin.numberpicker.NumberPicker
+                <org.fossify.clock.views.WheelPickerView
                     android:id="@+id/edit_alarm_minute_picker"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:np_formatter="%02d"
-                    app:np_max="59"
-                    app:np_min="0"
-                    app:np_selectedTextSize="@dimen/elderly_list_time_text_size"
-                    app:np_textSize="@dimen/elderly_body_text_size" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
-                <com.shawnlin.numberpicker.NumberPicker
+                <org.fossify.clock.views.WheelPickerView
                     android:id="@+id/edit_alarm_ampm_picker"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:np_max="1"
-                    app:np_min="0"
-                    app:np_selectedTextSize="@dimen/elderly_list_time_text_size"
-                    app:np_textSize="@dimen/elderly_body_text_size"
-                    app:np_wrapSelectorWheel="true" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
@@ -123,27 +122,29 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/big_margin"
+                android:layout_marginTop="@dimen/eb_space_32"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/activity_margin"
-                android:paddingVertical="@dimen/small_margin">
+                android:orientation="horizontal">
 
                 <org.fossify.commons.views.MyTextView
                     android:id="@+id/edit_alarm_repeat_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/eb_poppins_bold"
                     android:text="@string/repeat"
-                    android:textSize="@dimen/elderly_body_text_size" />
+                    android:textColor="@color/eb_text"
+                    android:textSize="@dimen/eb_text_24" />
 
                 <org.fossify.commons.views.MyTextView
                     android:id="@+id/edit_alarm_repeat_off_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/eb_space_8"
+                    android:fontFamily="@font/eb_poppins_bold"
                     android:text="@string/off"
-                    android:textSize="@dimen/elderly_body_text_size" />
+                    android:textColor="@color/eb_sub"
+                    android:textSize="@dimen/eb_text_17" />
 
                 <org.fossify.commons.views.MyMaterialSwitch
                     android:id="@+id/edit_alarm_repeat_switch"
@@ -154,9 +155,11 @@
                     android:id="@+id/edit_alarm_repeat_on_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginStart="@dimen/eb_space_8"
+                    android:fontFamily="@font/eb_poppins_bold"
                     android:text="@string/on"
-                    android:textSize="@dimen/elderly_body_text_size" />
+                    android:textColor="@color/eb_sub"
+                    android:textSize="@dimen/eb_text_17" />
 
             </LinearLayout>
 
@@ -165,19 +168,20 @@
                 android:id="@+id/edit_alarm_days_holder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginTop="@dimen/eb_space_16"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/elderly_day_chip_row_padding" />
+                android:orientation="horizontal" />
 
             <org.fossify.commons.views.MyTextView
                 android:id="@+id/edit_alarm_days_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginTop="@dimen/eb_space_8"
+                android:fontFamily="@font/eb_poppins_semibold"
                 android:gravity="center"
                 android:text="@string/tap_to_select"
-                android:textSize="@dimen/elderly_body_text_size" />
+                android:textColor="@color/eb_sub"
+                android:textSize="@dimen/eb_text_20" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -187,8 +191,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginHorizontal="@dimen/activity_margin"
-        android:layout_marginVertical="@dimen/normal_margin"
+        android:layout_marginHorizontal="@dimen/eb_gutter"
+        android:layout_marginTop="@dimen/eb_space_16"
+        android:layout_marginBottom="@dimen/eb_space_18"
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
@@ -196,7 +201,7 @@
             style="@style/ElderlyButton.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/eb_space_14"
             android:layout_weight="1"
             android:text="@string/cancel"
             app:icon="@drawable/ic_cross_vector" />

@@ -28,7 +28,6 @@ import org.fossify.commons.extensions.beVisibleIf
 import org.fossify.commons.extensions.getProperBackgroundColor
 import org.fossify.commons.extensions.getProperTextColor
 import org.fossify.commons.extensions.toast
-import org.fossify.commons.extensions.updateTextColors
 import org.fossify.commons.helpers.SORT_BY_CUSTOM
 import org.fossify.commons.helpers.SORT_BY_DATE_CREATED
 import org.fossify.commons.helpers.ensureBackgroundThread
@@ -73,7 +72,6 @@ class AlarmFragment : Fragment(), ToggleAlarmInterface {
 
     private fun setupViews() {
         binding.apply {
-            requireContext().updateTextColors(alarmFragment)
             alarmAdd.setOnClickListener {
                 openEditAlarm(null)
             }

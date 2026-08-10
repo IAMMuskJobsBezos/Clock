@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <corners android:radius="@dimen/elderly_day_chip_radius" />
+    <corners android:radius="@dimen/eb_radius_day_chip" />
 
     <stroke
         android:width="1.5dp"
@@ -12,6 +12,6 @@
     <solid android:color="@android:color/transparent" />
 
     <size
-        android:width="@dimen/elderly_day_chip_size"
-        android:height="@dimen/elderly_day_chip_size" />
+        android:width="@dimen/eb_day_chip_size"
+        android:height="@dimen/eb_day_chip_size" />
 </shape>

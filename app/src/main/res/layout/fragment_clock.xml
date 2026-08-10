@@ -4,23 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clock_fragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/eb_bg">
 
+    <!-- Hero time block, docs/elderly-spec/design-tokens.md: Roboto 500 84sp + meridiem 28sp,
+         baseline-aligned (MyTextClock scales the AM/PM span down via AM_PM_SCALE = 28/84). -->
     <org.fossify.clock.views.MyTextClock
         android:id="@+id/clock_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/big_margin"
-        android:layout_marginTop="@dimen/big_margin"
-        android:layout_marginBottom="@dimen/small_margin"
-        android:autoSizeMaxTextSize="@dimen/elderly_display_text_size"
-        android:autoSizeMinTextSize="@dimen/elderly_display_text_size_min"
+        android:layout_marginHorizontal="@dimen/eb_gutter"
+        android:layout_marginTop="@dimen/eb_space_18"
+        android:fontFamily="@font/eb_roboto_medium"
+        android:autoSizeMaxTextSize="@dimen/eb_text_84"
+        android:autoSizeMinTextSize="@dimen/eb_text_84_min"
         android:autoSizeStepGranularity="2sp"
         android:autoSizeTextType="uniform"
         android:fontFeatureSettings="tnum"
         android:gravity="center_horizontal"
         android:maxLines="1"
-        android:textSize="@dimen/elderly_display_text_size"
+        android:textColor="@color/eb_display_ink"
+        android:textSize="@dimen/eb_text_84"
         tools:text="9:45 AM" />
 
     <org.fossify.clock.views.MyTextClock
@@ -28,46 +32,67 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/clock_time"
+        android:layout_marginTop="@dimen/eb_space_12"
+        android:fontFamily="@font/eb_poppins_semibold"
         android:format12Hour="EEEE, MMMM d"
         android:format24Hour="EEEE, MMMM d"
         android:gravity="center_horizontal"
-        android:textSize="@dimen/elderly_list_secondary_text_size"
-        tools:text="Monday, May 11" />
+        android:textColor="@color/eb_date"
+        android:textSize="@dimen/eb_text_21"
+        tools:text="Sunday, August 9" />
 
+    <!-- Next-alarm note: gray chip, shown only when an alarm is enabled - see
+         ClockFragment.updateAlarm(). -->
     <org.fossify.commons.views.MyTextView
         android:id="@+id/clock_alarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/clock_date"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/eb_space_14"
+        android:background="@drawable/eb_bg_chip"
         android:drawableStart="@drawable/ic_clock_small"
-        android:drawablePadding="@dimen/small_margin"
+        android:drawablePadding="@dimen/eb_space_8"
+        android:fontFamily="@font/eb_poppins_semibold"
         android:gravity="center_horizontal"
-        android:textSize="@dimen/elderly_body_text_size"
-        tools:text="Thu, 8:00" />
+        android:paddingHorizontal="@dimen/eb_space_16"
+        android:paddingVertical="@dimen/eb_space_8"
+        android:textColor="@color/eb_chip_text"
+        android:textSize="@dimen/eb_text_19"
+        tools:text="Today, 7:00 AM" />
 
+    <!-- Fills all the way to the bottom of the screen, running *behind* the floating Add City
+         button below (which has a transparent interior) rather than stopping above it - the
+         paddingBottom keeps normal scroll position clear of the button, but clipToPadding=false
+         lets an intentional overscroll carry list rows up into that padding, visible through the
+         button. See decisions.md. -->
     <org.fossify.commons.views.MyRecyclerView
         android:id="@+id/time_zones_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/clock_alarm"
-        android:layout_above="@+id/clock_add_city"
-        android:layout_marginTop="@dimen/normal_margin"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/eb_space_16"
         android:clipToPadding="false"
         android:overScrollMode="ifContentScrolls"
+        android:paddingHorizontal="@dimen/eb_gutter"
+        android:paddingBottom="@dimen/eb_addcity_list_bottom_inset"
         android:scrollbars="none"
         android:visibility="gone"
         app:layoutManager="org.fossify.commons.views.MyLinearLayoutManager" />
 
+    <!-- Filled/opaque - the button itself shouldn't be see-through, but the list still runs
+         full-height behind it (see time_zones_list above) so scrolled rows are visible around
+         it rather than the list stopping dead above a hard bar. See decisions.md. -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/clock_add_city"
         style="@style/ElderlyButton.Primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginHorizontal="@dimen/activity_margin"
-        android:layout_marginVertical="@dimen/normal_margin"
+        android:layout_marginHorizontal="@dimen/eb_gutter"
+        android:layout_marginTop="@dimen/eb_space_12"
+        android:layout_marginBottom="@dimen/eb_space_18"
         android:text="@string/add_city"
         app:icon="@drawable/ic_plus_vector" />
 

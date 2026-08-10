@@ -21,6 +21,7 @@ flavor) — decision #1 in [decisions.md](decisions.md).
 | File | Covers |
 | --- | --- |
 | [design-principles.md](design-principles.md) | Type scale, touch targets, contrast, navigation, language rules for every screen |
+| [design-tokens.md](design-tokens.md) | Exact colors, typography, spacing, radii, motion timings from the ElderBerry Design System handoff |
 | [clock.md](clock.md) | Clock tab: big local time, world-clock list, Add City screen |
 | [alarm.md](alarm.md) | Alarm tab: alarm list, full-screen alarm editor with scroll wheels |
 | [timer.md](timer.md) | Timer tab: wheel picker, running/paused states |
@@ -40,15 +41,24 @@ backup/export.
 
 ## Status
 
-**Clock app redesign complete as of 2026-07-18.** All four tabs, the Alarm
-and Add City full-screen editors, and the alarm/timer ring screens are
-implemented and match this spec — see
-[decisions.md](decisions.md#verified-working-live-device-testing-2026-07-18)
-for what's been confirmed on-device.
+**Structure/behavior complete as of 2026-07-18**, then **restyled to the
+ElderBerry Design System handoff on 2026-08-09** (decision #25) — see
+[design-tokens.md](design-tokens.md) for the exact values now in effect.
+Product/behavior decisions from the first pass (single timer, full-screen
+editors, alarm scheduling, etc.) are unchanged; only the visual layer moved.
 
-Genuinely still open: dark theme and 200% font size haven't been checked
-(everything so far was verified in light theme at default scale only); a
-pre-existing Timer duration display bug hasn't been investigated; alarm
-extras (ringtone/vibrate/label/snooze) and the Settings/widgets redesign
-remain deferred by design (decision #5, #13). See decisions.md's "Still
-open" section for the full list.
+The restyle included a new `WheelPickerView` (physics-matched picker wheel,
+replacing the stock NumberPicker library) used on the Alarm editor and Timer
+setup screens, and an `AngledGradientDrawable` for the ring screen's 160°
+gradient. Verified on a physical Pixel 9a (light + a dark-theme spot check):
+Clock, Add City, Alarm list + editor, Stopwatch/Timer idle & running all
+match the handoff closely. Not yet seen live: the ring screen firing for
+real (restyled in code, not device-verified this session — see
+decisions.md's "Still open").
+
+Genuinely still open: 200% font size hasn't been checked; the dark palette
+is derived, not spec'd, and needs a real contrast pass; a pre-existing Timer
+duration display bug hasn't been investigated; alarm extras
+(ringtone/vibrate/label/snooze) and the Settings/widgets redesign remain
+deferred by design (decision #5, #13). See decisions.md's "Still open"
+section for the full list.

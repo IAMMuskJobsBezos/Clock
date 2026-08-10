@@ -3,6 +3,11 @@
 These rules come from what is consistent across every wireframe. They override
 current app styling wherever the two conflict.
 
+Exact colors, type sizes, spacing, radii, and motion timings are specced in
+[design-tokens.md](design-tokens.md) (the ElderBerry Design System handoff,
+decision #25) — that file wins on any specific value; this file states the
+underlying rules.
+
 ## Typography
 
 - Primary time displays (current time, countdown, elapsed time) are the
@@ -16,9 +21,12 @@ current app styling wherever the two conflict.
 
 ## Touch targets
 
-- Minimum touch target 56dp; primary action buttons are full-width (or
-  half-width when paired) pill buttons ~64dp tall, as drawn
-  ("Start Timer", "+ Add Alarm", "Cancel"/"Save").
+- Primary action buttons are full-width (or half-width when paired) pill
+  buttons **52dp tall** (decision #25, revised from the earlier 64dp/56dp-min
+  rule to match the handoff exactly) — still comfortably above Android's own
+  48dp accessibility floor, and full-width/half-width sizing keeps the actual
+  tap area generous. Day chips (56dp) and list rows (~96dp) remain at or
+  above 56dp.
 - Paired buttons (Cancel/Save, Reset/Stop) sit side by side with a clear gap;
   destructive/leaving action on the left, confirming action on the right —
   matching every wireframe.
@@ -35,18 +43,18 @@ current app styling wherever the two conflict.
 
 - Persistent bottom navigation bar on all four main screens with four
   fixed items, each icon + label: **Clock, Alarm, Timer, Stopwatch**. Active
-  tab marked by color, not icon shape (decision #18): every tab — active or
-  not — uses the same outline-style icon; the active tab's icon and label
-  are **black**, inactive ones are **purple**.
+  tab marked by color, not icon shape (decision #18, revised): every tab —
+  active or not — uses the same outline-style icon; the active tab's icon
+  and label are **purple** (`accent`), inactive ones are **gray** (`tabOff`).
 - Swiping between tabs is **disabled** (decision #9) — accidental horizontal
   swipes changing screens is a common elderly-UX failure. Tabs change only by
   tapping the bottom nav.
 - **No back arrow in any header, anywhere** (decision #16) — every screen's
-  app bar is a plain static label reading "Clock", not a per-tab or
-  per-screen title, and never shows a back icon. The system back
-  gesture/button is the way to leave a full-screen editor without saving.
-  Matches the sibling Fossify apps' single-label header pattern; the
-  tradeoff is that Settings/About/Sort are unreachable from the main screen
+  app bar is a plain static label and never shows a back icon. The system
+  back gesture/button is the way to leave a full-screen editor without
+  saving. As of decision #16 (revised), the label **does** change per tab
+  ("Clock" / "Alarm" / "Stopwatch" / "Timer") rather than staying fixed on
+  "Clock" — Settings/About/Sort remain unreachable from the main screen
   (no overflow menu either — see [alarm.md](alarm.md), [implementation-map.md](implementation-map.md)).
 - Editing happens on **full screens**, not floating dialogs: alarm editor and
   Add City are drawn as full pages with explicit Cancel/Save. No editing via
@@ -61,8 +69,9 @@ current app styling wherever the two conflict.
   a 24-hour variant (0–23 hour column, no AM/PM column).
 - On/off is a labeled toggle with the words "Off" and "On" beside the switch,
   as drawn on alarm rows and the Repeat control.
-- Day-of-week selection is a row of large square chips S M T W T F S
-  (decision #17) with helper text "Tap to select".
+- Day-of-week selection is a row of large day chips S M T W T F S — rounded
+  rectangles, 14px radius, 56px tall (decision #17, revised) — with helper
+  text "Tap to select".
 
 ## Color & contrast
 

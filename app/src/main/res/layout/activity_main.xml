@@ -8,13 +8,15 @@
     <org.fossify.commons.views.MyAppBarLayout
         android:id="@+id/main_appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/main_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/color_primary"
+            android:layout_height="@dimen/eb_title_row_height"
+            android:background="@color/eb_bg"
+            android:paddingHorizontal="@dimen/eb_space_8"
             app:titleTextAppearance="@style/AppTheme.ActionBar.TitleTextStyle" />
 
     </org.fossify.commons.views.MyAppBarLayout>
@@ -23,21 +25,34 @@
         android:id="@+id/main_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/eb_bg"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <org.fossify.clock.views.NonSwipeableViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/main_tabs_holder" />
+            android:layout_above="@+id/main_tabs_divider" />
+
+        <View
+            android:id="@+id/main_tabs_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/eb_separator_weight"
+            android:layout_above="@+id/main_tabs_holder"
+            android:background="@color/eb_line" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/main_tabs_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:paddingTop="@dimen/eb_space_10"
+            android:paddingBottom="@dimen/eb_space_16"
+            android:paddingHorizontal="@dimen/eb_space_8"
             app:tabIndicator="@null"
-            app:tabMinWidth="150dp"
+            app:tabMinWidth="0dp"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
             app:tabRippleColor="@null" />
 
     </RelativeLayout>

@@ -24,10 +24,8 @@ import org.fossify.commons.extensions.applyColorFilter
 import org.fossify.commons.extensions.beVisibleIf
 import org.fossify.commons.extensions.getProperBackgroundColor
 import org.fossify.commons.extensions.getProperPrimaryColor
-import org.fossify.commons.extensions.getProperTextColor
 import org.fossify.commons.extensions.removeBit
 import org.fossify.commons.extensions.toast
-import org.fossify.commons.extensions.updateTextColors
 import org.fossify.commons.extensions.viewBinding
 import org.greenrobot.eventbus.EventBus
 import kotlinx.serialization.json.Json
@@ -46,7 +44,6 @@ class AlarmEditorActivity : SimpleActivity() {
     private val binding: ActivityEditAlarmBinding by viewBinding(ActivityEditAlarmBinding::inflate)
     private lateinit var alarm: Alarm
     private var isNewAlarm = true
-    private val textColor by lazy { getProperTextColor() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +51,10 @@ class AlarmEditorActivity : SimpleActivity() {
         setupEdgeToEdge(padBottomSystem = listOf(binding.editAlarmButtonsHolder))
 
         loadAlarm()
-        updateTextColors(binding.editAlarmHolder)
+        // Not calling updateTextColors() here (as the pre-restyle version did) - every text
+        // color on this screen is set explicitly per docs/elderly-spec/design-tokens.md (sub
+        // vs. text vs. accent differ per label), and that call would blanket-overwrite them all
+        // to one color.
         setupTimeWheels()
         setupRepeat()
         setupBottomButtons()
@@ -62,7 +62,7 @@ class AlarmEditorActivity : SimpleActivity() {
 
     override fun onResume() {
         super.onResume()
-        setupTopAppBar(binding.editAlarmAppbar)
+        setupTopAppBar(binding.editAlarmAppbar, topBarColor = getProperBackgroundColor())
     }
 
     private fun loadAlarm() {
@@ -104,33 +104,30 @@ class AlarmEditorActivity : SimpleActivity() {
         val minutes = alarm.timeInMinutes % 60
 
         binding.apply {
-            arrayOf(editAlarmHourPicker, editAlarmMinutePicker, editAlarmAmpmPicker).forEach {
-                it.textColor = textColor
-                it.selectedTextColor = textColor
-                it.dividerColor = textColor
-            }
-
-            editAlarmMinutePicker.value = minutes
-            editAlarmMinutePicker.setOnValueChangedListener { _, _, _ -> onTimeWheelChanged() }
+            editAlarmMinutePicker.formatter = { "%02d".format(it) }
+            editAlarmMinutePicker.configure(itemCount = 60, initialValue = minutes)
+            editAlarmMinutePicker.onValueChangeListener = { onTimeWheelChanged() }
 
             if (use24Hour) {
                 editAlarmAmpmLabel.beVisibleIf(false)
                 editAlarmAmpmPicker.beVisibleIf(false)
-                editAlarmHourPicker.minValue = 0
-                editAlarmHourPicker.maxValue = 23
-                editAlarmHourPicker.value = hours24
+                editAlarmHourPicker.formatter = { "%02d".format(it) }
+                editAlarmHourPicker.configure(itemCount = 24, initialValue = hours24)
             } else {
-                editAlarmAmpmPicker.displayedValues = resources.getStringArray(R.array.am_pm_values)
+                editAlarmAmpmPicker.beVisibleIf(true)
+                val amPmValues = resources.getStringArray(R.array.am_pm_values)
+                editAlarmAmpmPicker.formatter = { amPmValues[it] }
+                // Index 0 shows "12" (mod-12 clock wheel: 12 o'clock -> index 0).
+                editAlarmHourPicker.formatter = { if (it == 0) "12" else it.toString() }
                 val hour12 = if (hours24 % 12 == 0) 12 else hours24 % 12
+                val hourIndex = hour12 % 12
                 val ampmIndex = if (hours24 < 12) 0 else 1
-                editAlarmHourPicker.minValue = 1
-                editAlarmHourPicker.maxValue = 12
-                editAlarmHourPicker.value = hour12
-                editAlarmAmpmPicker.value = ampmIndex
-                editAlarmAmpmPicker.setOnValueChangedListener { _, _, _ -> onTimeWheelChanged() }
+                editAlarmHourPicker.configure(itemCount = 12, initialValue = hourIndex)
+                editAlarmAmpmPicker.configure(itemCount = 2, initialValue = ampmIndex, isClamped = true)
+                editAlarmAmpmPicker.onValueChangeListener = { onTimeWheelChanged() }
             }
 
-            editAlarmHourPicker.setOnValueChangedListener { _, _, _ -> onTimeWheelChanged() }
+            editAlarmHourPicker.onValueChangeListener = { onTimeWheelChanged() }
         }
     }
 
@@ -140,7 +137,8 @@ class AlarmEditorActivity : SimpleActivity() {
             val hours24 = if (config.use24HourFormat) {
                 editAlarmHourPicker.value
             } else {
-                val hour12 = editAlarmHourPicker.value
+                val hourIndex = editAlarmHourPicker.value
+                val hour12 = if (hourIndex == 0) 12 else hourIndex
                 val isPm = editAlarmAmpmPicker.value == 1
                 when {
                     hour12 == 12 && !isPm -> 0
@@ -155,9 +153,7 @@ class AlarmEditorActivity : SimpleActivity() {
 
     private fun setupRepeat() {
         binding.apply {
-            editAlarmRepeatOffLabel.setTextColor(textColor)
-            editAlarmRepeatOnLabel.setTextColor(textColor)
-            styleToggleSwitch(editAlarmRepeatSwitch, getProperPrimaryColor(), getProperBackgroundColor())
+            styleToggleSwitch(editAlarmRepeatSwitch)
 
             val isRecurring = alarm.isRecurring()
             editAlarmRepeatSwitch.isChecked = isRecurring
@@ -216,7 +212,10 @@ class AlarmEditorActivity : SimpleActivity() {
         val drawable = resources.getDrawable(drawableId, theme).mutate()
         drawable.applyColorFilter(chipColor)
         chip.background = drawable
-        chip.setTextColor(if (isSelected) getProperBackgroundColor() else chipColor)
+        // Selected chip text is always white, regardless of theme - the fill is the same accent
+        // purple in both, see docs/elderly-spec/design-tokens.md ("Selected: fill accent, white
+        // text").
+        chip.setTextColor(if (isSelected) android.graphics.Color.WHITE else chipColor)
     }
 
     private fun deleteAlarmAndFinish() {

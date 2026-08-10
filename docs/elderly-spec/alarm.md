@@ -9,8 +9,8 @@ Wireframes: [`alarm-list-a`](wireframes/alarm-list-a.png),
 
 ## Alarm list
 
-1. Header "Clock" — the app bar shows a static app-section label, not a
-   per-tab title (see [design-principles.md](design-principles.md)).
+1. Header "Alarm" — the app bar shows the active tab's label
+   (see [design-principles.md](design-principles.md)).
 2. **One full-width row per alarm**, each containing:
    - Edit affordance: pencil icon (one sketch labels it "Edit") on the left —
      tapping the row/pencil opens the editor.
@@ -30,7 +30,7 @@ No swipe-to-delete, no long-press menus. Deletion happens inside the editor
 Used for both Add and Edit. No back arrow in the header (decision #16) — the
 system back gesture/button is the way to leave without saving.
 
-1. Header "Clock" (static, same as every screen — see above).
+1. Header "Alarm".
 2. **Time picker — three scroll wheels**: Hour | Minute | AM/PM, with column
    headers, current value centered and largest. Helper text underneath:
    "Scroll to set time/alarm".

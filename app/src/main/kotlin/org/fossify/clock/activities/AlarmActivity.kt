@@ -16,7 +16,7 @@ import org.fossify.clock.helpers.ALARM_ID
 import org.fossify.clock.helpers.getPassedSeconds
 import org.fossify.clock.models.Alarm
 import org.fossify.clock.models.AlarmEvent
-import org.fossify.commons.extensions.updateTextColors
+import org.fossify.clock.views.AngledGradientDrawable
 import org.fossify.commons.extensions.viewBinding
 import org.fossify.commons.helpers.isOreoMr1Plus
 import org.greenrobot.eventbus.EventBus
@@ -37,7 +37,7 @@ class AlarmActivity : SimpleActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         showOverLockscreen()
-        updateTextColors(binding.root)
+        applyRingingGradient()
 
         val id = intent.getIntExtra(ALARM_ID, -1)
         alarm = dbHelper.getAlarmWithId(id)
@@ -47,16 +47,24 @@ class AlarmActivity : SimpleActivity() {
         }
 
         tickCurrentTime()
-
-        val alarmTime = getFormattedTime(
-            passedSeconds = alarm!!.timeInMinutes * 60,
-            showSeconds = false,
-            makeAmPmSmaller = false
-        ).toString().uppercase()
-        binding.reminderText.text = getString(R.string.alarm_schedule_line, alarmTime)
+        binding.reminderText.text = getString(org.fossify.commons.R.string.alarm)
 
         setupButtons()
         EventBus.getDefault().register(this)
+    }
+
+    // linear-gradient(160deg, #6b4574 0%, #4a2c58 55%, #2a1633 100%), see
+    // docs/elderly-spec/design-tokens.md.
+    private fun applyRingingGradient() {
+        binding.root.background = AngledGradientDrawable(
+            angleDeg = 160f,
+            colors = intArrayOf(
+                androidx.core.content.ContextCompat.getColor(this, R.color.eb_ringing_start),
+                androidx.core.content.ContextCompat.getColor(this, R.color.eb_ringing_mid),
+                androidx.core.content.ContextCompat.getColor(this, R.color.eb_ringing_end),
+            ),
+            positions = floatArrayOf(0f, 0.55f, 1f)
+        )
     }
 
     private fun setupButtons() {

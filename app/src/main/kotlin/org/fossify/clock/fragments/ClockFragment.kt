@@ -23,7 +23,6 @@ import org.fossify.clock.models.MyTimeZone
 import org.fossify.commons.extensions.beVisibleIf
 import org.fossify.commons.extensions.getProperBackgroundColor
 import org.fossify.commons.extensions.getProperTextColor
-import org.fossify.commons.extensions.updateTextColors
 import java.util.Calendar
 
 class ClockFragment : Fragment() {
@@ -47,9 +46,6 @@ class ClockFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setupDateTime()
-
-        val safeContext = context ?: return
-        binding.clockDate.setTextColor(safeContext.getProperTextColor())
     }
 
     override fun onPause() {
@@ -69,8 +65,6 @@ class ClockFragment : Fragment() {
     private fun setupViews() {
         val safeContext = context ?: return
         binding.apply {
-            safeContext.updateTextColors(clockFragment)
-            clockTime.setTextColor(safeContext.getProperTextColor())
             val clockFormat = if (safeContext.config.use24HourFormat) {
                 FORMAT_24H
             } else {
@@ -115,7 +109,11 @@ class ClockFragment : Fragment() {
             binding.apply {
                 clockAlarm.beVisibleIf(nextAlarm.isNotEmpty())
                 clockAlarm.text = nextAlarm
-                clockAlarm.colorCompoundDrawable(safeContext.getProperTextColor())
+                // Matches the chip's own text color, not body ink - docs/elderly-spec/design-tokens.md
+                // ("gray chip" note style).
+                clockAlarm.colorCompoundDrawable(
+                    androidx.core.content.ContextCompat.getColor(safeContext, org.fossify.clock.R.color.eb_chip_text)
+                )
             }
         }
     }

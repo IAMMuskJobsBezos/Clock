@@ -12,10 +12,9 @@
 
     <View
         android:id="@+id/add_time_zone_selector"
-        android:layout_width="@dimen/elderly_selector_circle_size"
-        android:layout_height="@dimen/elderly_selector_circle_size"
-        android:layout_marginStart="@dimen/activity_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="@dimen/eb_selector_dot_size"
+        android:layout_height="@dimen/eb_selector_dot_size"
+        android:layout_marginTop="@dimen/eb_space_18"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,40 +22,44 @@
         android:id="@+id/add_time_zone_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/normal_margin"
+        android:layout_marginStart="@dimen/eb_space_16"
         android:ellipsize="end"
+        android:fontFamily="@font/eb_poppins_semibold"
         android:maxLines="1"
-        android:textSize="@dimen/elderly_list_secondary_text_size"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/eb_text"
+        android:textSize="@dimen/eb_text_24"
+        app:layout_constraintBottom_toBottomOf="@+id/add_time_zone_selector"
         app:layout_constraintEnd_toStartOf="@+id/add_time_zone_offset"
         app:layout_constraintStart_toEndOf="@+id/add_time_zone_selector"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/add_time_zone_selector"
         tools:text="Los Angeles, CA" />
 
     <org.fossify.commons.views.MyTextView
         android:id="@+id/add_time_zone_offset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/normal_margin"
-        android:layout_marginEnd="@dimen/activity_margin"
-        android:textSize="@dimen/elderly_list_secondary_text_size"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="@dimen/eb_space_16"
+        android:fontFamily="@font/eb_poppins_bold"
+        android:textColor="@color/eb_accent"
+        android:textSize="@dimen/eb_text_20"
+        app:layout_constraintBottom_toBottomOf="@+id/add_time_zone_selector"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/add_time_zone_selector"
         tools:text="+3hr" />
 
-    <!-- Subtle row separator - a plain per-row view (not a RecyclerView ItemDecoration) so it
-         naturally appears between every row, including trailing the last one, with no extra
-         edge-case handling needed. The row root has no padding of its own (content views carry
-         their own start/end margins instead), so this reaches the true screen edge with zero
-         margin - ConstraintLayout doesn't reliably let negative margins push past a parent's
-         own padding, so that approach (tried first) didn't actually reach the edge. -->
+    <!-- Row separator - a plain per-row view rather than a RecyclerView ItemDecoration, so it
+         naturally appears between every row (including trailing the last one). Sits within the
+         list's own 24dp gutter padding, per the handoff's "0 24px padding" scroll container.
+         Anchored below the last content view (not parent-bottom, which would clip to the
+         parent's own padding and sit flush against the content with no gap) so the divider
+         sits equidistant between this row's content and the next row's - see decisions.md. -->
     <View
         android:layout_width="0dp"
-        android:layout_height="@dimen/divider_height"
-        android:background="@color/divider_grey"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="@dimen/eb_separator_weight"
+        android:layout_marginTop="@dimen/eb_space_18"
+        android:background="@color/eb_line"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_time_zone_selector" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

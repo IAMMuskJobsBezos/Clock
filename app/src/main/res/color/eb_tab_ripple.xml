@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pressed-state visual indicator for the bottom nav tabs, see eb_btn_primary_bg.xml. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/eb_accent" android:alpha="0.25" />
+</selector>

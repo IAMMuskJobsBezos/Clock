@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Dark surface: not specced by the handoff (light is the shipped surface), derived by
+         inverting bg/ink roles and keeping the same hue relationships — see
+         docs/elderly-spec/design-tokens.md. Verify contrast on-device. -->
+
+    <color name="eb_bg">#FF1B1720</color>
+    <color name="eb_text">#FFF3EEF7</color>
+    <color name="eb_title_ink">#FFFFFFFF</color>
+    <color name="eb_display_ink">#FFFFFFFF</color>
+    <color name="eb_sub">#FFB4ACBE</color>
+    <color name="eb_date">#FF9C94A8</color>
+    <color name="eb_faint">#FF6F6779</color>
+    <color name="eb_accent">#FFC9A8DA</color>
+    <color name="eb_line">#FF36303F</color>
+    <color name="eb_input_bg">#FF241F2C</color>
+    <color name="eb_btn_bg">#FF8B5AA0</color>
+    <color name="eb_btn_text">#FFFFFFFF</color>
+    <color name="eb_ghost_border">#FF4A4356</color>
+    <color name="eb_tab_on">#FFC9A8DA</color>
+    <color name="eb_tab_off">#FF8A8393</color>
+    <color name="eb_knob_on">#FFFFFFFF</color>
+    <color name="eb_toggle_knob_off">#FF5C4E68</color>
+    <color name="eb_chip_text">#FFE7DEEF</color>
+    <color name="eb_chip_bg">#FF2E2736</color>
+
+    <!-- Ringing gradient is already dark; unchanged from the light-surface values. -->
+    <color name="eb_ringing_start">#FF6B4574</color>
+    <color name="eb_ringing_mid">#FF4A2C58</color>
+    <color name="eb_ringing_end">#FF2A1633</color>
+
+</resources>

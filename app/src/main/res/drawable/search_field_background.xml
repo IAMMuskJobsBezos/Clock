@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Search pill, see docs/elderly-spec/design-tokens.md: radius 100dp, fill eb_input_bg. No
+     border - Emmett's explicit call, overriding the handoff's 2dp eb_line stroke. -->
 <shape
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <corners android:radius="@dimen/material_dialog_corner_radius" />
-
-    <solid android:color="@color/md_grey_200" />
+    <corners android:radius="@dimen/eb_radius_pill" />
+    <solid android:color="@color/eb_input_bg" />
 </shape>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ElderBerry Design System palette (light surface — the shipped one), shared across the
+         app suite and the launcher. Exact values from docs/elderly-spec/design-tokens.md; keep
+         the two in sync. Colour only: no layout, size or spacing changes hang off these. -->
+
+    <color name="eb_bg">#FFFFFFFF</color>
+    <color name="eb_text">#FF15121A</color>
+    <color name="eb_title_ink">#FF000000</color>
+    <color name="eb_display_ink">#FF1A181D</color>
+    <color name="eb_sub">#FF6F6B75</color>
+    <color name="eb_date">#FF8B878F</color>
+    <color name="eb_faint">#FFA8A4AE</color>
+    <color name="eb_accent">#FF6A3A7E</color>
+    <color name="eb_line">#FFE8E6EA</color>
+    <color name="eb_input_bg">#FFF4F3F5</color>
+    <color name="eb_btn_bg">#FF6A3A7E</color>
+    <color name="eb_btn_text">#FFFFFFFF</color>
+    <color name="eb_ghost_border">#FFD6D3D9</color>
+    <color name="eb_tab_on">#FF6A3A7E</color>
+    <color name="eb_tab_off">#FF7C7883</color>
+    <color name="eb_knob_on">#FFFFFFFF</color>
+    <color name="eb_toggle_knob_off">#FFD8CBDF</color>
+    <color name="eb_chip_text">#FF4A4550</color>
+    <color name="eb_chip_bg">#FFF2F1F4</color>
+
+    <!-- Ringing overlay gradient stops: linear-gradient(160deg, start 0%, mid 55%, end 100%). -->
+    <color name="eb_ringing_start">#FF6B4574</color>
+    <color name="eb_ringing_mid">#FF4A2C58</color>
+    <color name="eb_ringing_end">#FF2A1633</color>
+
+</resources>

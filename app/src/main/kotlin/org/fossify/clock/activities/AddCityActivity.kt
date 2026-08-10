@@ -8,8 +8,8 @@ import org.fossify.clock.databinding.ActivityAddCityBinding
 import org.fossify.clock.extensions.config
 import org.fossify.clock.helpers.getAllTimeZones
 import org.fossify.commons.extensions.adjustAlpha
+import org.fossify.commons.extensions.getProperBackgroundColor
 import org.fossify.commons.extensions.getProperTextColor
-import org.fossify.commons.extensions.updateTextColors
 import org.fossify.commons.extensions.viewBinding
 
 /**
@@ -30,11 +30,10 @@ class AddCityActivity : SimpleActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setupEdgeToEdge(padBottomSystem = listOf(binding.addCityButtonsHolder))
-        updateTextColors(binding.addCityHolder)
-        // updateTextColors() sweeps every child and calls MyEditText.setColors() on this field,
-        // which color-filters whatever background drawable is set to the primary color - that
-        // clobbers the plain grey search_field_background. Reapply it fresh (no filter) after.
-        binding.addCitySearch.background = getDrawable(R.drawable.search_field_background)
+        // Not sweeping with updateTextColors() (as the pre-restyle version did) - every color on
+        // this screen is set explicitly per docs/elderly-spec/design-tokens.md, and that sweep
+        // would blanket-overwrite them (it was also clobbering the search field's background,
+        // previously worked around by reapplying it after).
         binding.addCitySearch.setHintTextColor(getProperTextColor().adjustAlpha(0.6f))
 
         binding.addCityList.adapter = SelectTimeZonesAdapter(this, allTimeZones)
@@ -55,7 +54,7 @@ class AddCityActivity : SimpleActivity() {
 
     override fun onResume() {
         super.onResume()
-        setupTopAppBar(binding.addCityAppbar)
+        setupTopAppBar(binding.addCityAppbar, topBarColor = getProperBackgroundColor())
     }
 
     private fun scrollToRequestedTimeZone() {

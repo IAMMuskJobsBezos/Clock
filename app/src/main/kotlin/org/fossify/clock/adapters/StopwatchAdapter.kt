@@ -3,6 +3,7 @@ package org.fossify.clock.adapters
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import org.fossify.clock.R
 import org.fossify.clock.activities.SimpleActivity
@@ -67,7 +68,8 @@ class StopwatchAdapter(
     private fun setupView(view: View, lap: Lap) {
         ItemLapBinding.bind(view).apply {
             lapOrder.text = activity.getString(R.string.lap_number_format, lap.id)
-            lapOrder.setTextColor(textColor)
+            // Sub, not body ink - docs/elderly-spec/design-tokens.md ("Lap N" ... sub).
+            lapOrder.setTextColor(ContextCompat.getColor(activity, R.color.eb_sub))
 
             lapLapTime.text = lap.lapTime.getFormattedDuration(forceShowHours = true)
             lapLapTime.setTextColor(textColor)

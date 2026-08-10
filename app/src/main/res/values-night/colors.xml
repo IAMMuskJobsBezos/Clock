@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- eb_bg / eb_text / eb_accent already carry their night values; these entries exist so
+         the Commons defaults resolve against them in dark mode too. -->
+
+    <color name="default_background_color">@color/eb_bg</color>
+    <color name="default_text_color">@color/eb_text</color>
+
+</resources>

@@ -150,4 +150,9 @@ class Config(context: Context) : BaseConfig(context) {
         set(migrateFirstDayOfWeek) = prefs.edit {
             putBoolean(MIGRATE_FIRST_DAY_OF_WEEK, migrateFirstDayOfWeek)
         }
+
+    // prefs is protected on BaseConfig, so these live here rather than on ElderBerryTheme itself.
+    fun applyElderBerryTheme() = ElderBerryTheme.apply(context, this, prefs)
+
+    fun revertElderBerryTheme() = ElderBerryTheme.revert(this, prefs)
 }

@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Inflated with binding.editAlarmDaysHolder (a LinearLayout) as the parent, so
+     layout_width="0dp" + layout_weight="1" gives each of the 7 chips equal flex width, per
+     docs/elderly-spec/design-tokens.md ("7 buttons in an 8px-gap row, flex:1, 56px tall"). -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/alarm_day_textview"
-    android:layout_width="@dimen/elderly_day_chip_size"
-    android:layout_height="@dimen/elderly_day_chip_size"
-    android:layout_marginEnd="@dimen/elderly_day_chip_gap"
+    android:layout_width="0dp"
+    android:layout_height="@dimen/eb_day_chip_size"
+    android:layout_weight="1"
+    android:layout_marginEnd="@dimen/eb_day_chip_gap"
     android:clickable="true"
     android:focusable="true"
+    android:fontFamily="@font/eb_poppins_bold"
     android:gravity="center"
-    android:padding="@dimen/elderly_day_chip_padding"
-    android:textSize="@dimen/elderly_body_text_size"
-    android:textStyle="bold"
+    android:textSize="@dimen/eb_text_20"
     tools:text="M" />

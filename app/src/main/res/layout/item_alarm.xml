@@ -10,16 +10,16 @@
     android:focusable="true"
     android:foreground="@drawable/selector"
     android:minHeight="@dimen/elderly_row_min_height"
-    android:paddingHorizontal="@dimen/activity_margin"
-    android:paddingVertical="@dimen/normal_margin">
+    android:paddingHorizontal="@dimen/eb_gutter">
 
     <ImageView
         android:id="@+id/alarm_edit_icon"
-        android:layout_width="@dimen/textview_drawable_size"
-        android:layout_height="@dimen/textview_drawable_size"
-        android:layout_marginEnd="@dimen/normal_margin"
+        android:layout_width="@dimen/eb_row_icon_size"
+        android:layout_height="@dimen/eb_row_icon_size"
+        android:layout_marginEnd="@dimen/eb_space_16"
         android:contentDescription="@string/edit_alarm_action"
         android:src="@drawable/ic_edit_vector"
+        app:tint="@color/eb_text"
         app:layout_constraintBottom_toBottomOf="@+id/alarm_time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/alarm_time" />
@@ -28,11 +28,14 @@
         android:id="@+id/alarm_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/eb_space_18"
         android:ellipsize="end"
+        android:fontFamily="@font/eb_roboto_medium"
         android:fontFeatureSettings="tnum"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textSize="@dimen/elderly_list_time_text_size"
+        android:textColor="@color/eb_text"
+        android:textSize="@dimen/eb_text_32"
         app:layout_constraintEnd_toStartOf="@+id/alarm_toggle_holder"
         app:layout_constraintStart_toEndOf="@+id/alarm_edit_icon"
         app:layout_constraintTop_toTopOf="parent"
@@ -42,11 +45,12 @@
         android:id="@+id/alarm_days"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/tiny_margin"
+        android:layout_marginTop="@dimen/eb_space_6"
         android:ellipsize="end"
+        android:fontFamily="@font/eb_poppins_semibold"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textSize="@dimen/elderly_list_secondary_text_size"
+        android:textSize="@dimen/eb_text_18"
         app:layout_constraintEnd_toStartOf="@+id/alarm_toggle_holder"
         app:layout_constraintStart_toEndOf="@+id/alarm_edit_icon"
         app:layout_constraintTop_toBottomOf="@+id/alarm_time"
@@ -56,11 +60,12 @@
         android:id="@+id/alarm_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/tiny_margin"
+        android:layout_marginTop="@dimen/eb_space_6"
         android:ellipsize="end"
+        android:fontFamily="@font/eb_poppins_semibold"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textSize="@dimen/elderly_list_secondary_text_size"
+        android:textSize="@dimen/eb_text_18"
         app:layout_constraintEnd_toStartOf="@+id/alarm_toggle_holder"
         app:layout_constraintStart_toEndOf="@+id/alarm_edit_icon"
         app:layout_constraintTop_toBottomOf="@+id/alarm_days"
@@ -80,9 +85,10 @@
             android:id="@+id/alarm_off_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/small_margin"
+            android:layout_marginEnd="@dimen/eb_space_8"
+            android:fontFamily="@font/eb_poppins_bold"
             android:text="@string/off"
-            android:textSize="@dimen/elderly_body_text_size" />
+            android:textSize="@dimen/eb_text_17" />
 
         <org.fossify.commons.views.MyMaterialSwitch
             android:id="@+id/alarm_switch"
@@ -93,9 +99,10 @@
             android:id="@+id/alarm_on_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginStart="@dimen/eb_space_8"
+            android:fontFamily="@font/eb_poppins_bold"
             android:text="@string/on"
-            android:textSize="@dimen/elderly_body_text_size" />
+            android:textSize="@dimen/eb_text_17" />
 
     </LinearLayout>
 
@@ -109,5 +116,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Anchored below the last content view (not parent-bottom, which would clip to the
+         parent's own padding and sit flush against the content with no gap) so the divider
+         sits equidistant between this row's content and the next row's - see decisions.md. -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/eb_separator_weight"
+        android:layout_marginTop="@dimen/eb_space_18"
+        android:background="@color/eb_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_label" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

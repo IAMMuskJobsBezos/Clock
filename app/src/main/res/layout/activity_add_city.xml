@@ -8,13 +8,15 @@
     <org.fossify.commons.views.MyAppBarLayout
         android:id="@+id/add_city_appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/add_city_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/color_primary"
+            android:layout_height="@dimen/eb_title_row_height"
+            android:background="@color/eb_bg"
+            android:paddingHorizontal="@dimen/eb_space_8"
             app:title="@string/add_city"
             app:titleTextAppearance="@style/AppTheme.ActionBar.TitleTextStyle" />
 
@@ -24,21 +26,26 @@
         android:id="@+id/add_city_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/eb_bg"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <org.fossify.commons.views.MyEditText
             android:id="@+id/add_city_search"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/activity_margin"
-            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_height="@dimen/eb_search_height"
+            android:layout_marginHorizontal="@dimen/eb_gutter"
+            android:layout_marginTop="@dimen/eb_space_12"
             android:background="@drawable/search_field_background"
+            android:fontFamily="@font/eb_poppins_semibold"
+            android:gravity="center_vertical"
             android:hint="@string/search_for_a_city"
+            android:includeFontPadding="false"
             android:inputType="text"
             android:maxLines="1"
-            android:paddingHorizontal="@dimen/normal_margin"
-            android:paddingVertical="@dimen/normal_margin"
-            android:textSize="@dimen/elderly_body_text_size" />
+            android:paddingHorizontal="@dimen/eb_gutter"
+            android:paddingVertical="0dp"
+            android:textColor="@color/eb_text"
+            android:textSize="@dimen/eb_text_20" />
 
         <org.fossify.commons.views.MyRecyclerView
             android:id="@+id/add_city_list"
@@ -46,8 +53,9 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/add_city_buttons_holder"
             android:layout_below="@+id/add_city_search"
-            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/eb_space_12"
             android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/eb_gutter"
             android:scrollbars="none"
             app:layoutManager="org.fossify.commons.views.MyLinearLayoutManager" />
 
@@ -56,8 +64,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginHorizontal="@dimen/activity_margin"
-            android:layout_marginVertical="@dimen/normal_margin"
+            android:layout_marginHorizontal="@dimen/eb_gutter"
+            android:layout_marginTop="@dimen/eb_space_16"
+            android:layout_marginBottom="@dimen/eb_space_26"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
@@ -65,7 +74,7 @@
                 style="@style/ElderlyButton.Secondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/eb_space_14"
                 android:layout_weight="1"
                 android:text="@string/cancel"
                 app:icon="@drawable/ic_cross_vector" />

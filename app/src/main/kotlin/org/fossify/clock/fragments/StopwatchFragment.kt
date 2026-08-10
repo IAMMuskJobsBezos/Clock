@@ -22,7 +22,6 @@ import org.fossify.commons.extensions.beVisibleIf
 import org.fossify.commons.extensions.getProperBackgroundColor
 import org.fossify.commons.extensions.getProperTextColor
 import org.fossify.commons.extensions.openNotificationSettings
-import org.fossify.commons.extensions.updateTextColors
 
 /**
  * Whole seconds only, laps always newest-first, no sorting UI, Lap disabled (not hidden)
@@ -84,9 +83,6 @@ class StopwatchFragment : Fragment() {
 
     private fun setupViews() {
         val properTextColor = requireContext().getProperTextColor()
-        binding.apply {
-            requireContext().updateTextColors(stopwatchFragment)
-        }
 
         stopwatchAdapter?.apply {
             updatePrimaryColor()

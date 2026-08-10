@@ -4,19 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lap_holder"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/elderly_row_min_height"
-    android:paddingHorizontal="@dimen/activity_margin">
+    android:layout_height="wrap_content">
 
     <org.fossify.commons.views.MyTextView
         android:id="@+id/lap_order"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/eb_space_14"
+        android:fontFamily="@font/eb_poppins_semibold"
         android:fontFeatureSettings="tnum"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textSize="@dimen/elderly_list_time_text_size"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="@dimen/eb_text_20"
         app:layout_constraintEnd_toStartOf="@+id/lap_lap_time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,14 +25,27 @@
         android:id="@+id/lap_lap_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/eb_roboto_medium"
         android:fontFeatureSettings="tnum"
         android:gravity="end"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textSize="@dimen/elderly_list_time_text_size"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="@dimen/eb_text_24"
+        app:layout_constraintBottom_toBottomOf="@+id/lap_order"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/lap_order"
         tools:text="00:00:11" />
+
+    <!-- Anchored below the last content view (not parent-bottom, which would clip to the
+         parent's own padding and sit flush against the content with no gap) so the divider
+         sits equidistant between this row's content and the next row's - see decisions.md. -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/eb_separator_weight"
+        android:layout_marginTop="@dimen/eb_space_14"
+        android:background="@color/eb_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lap_order" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
