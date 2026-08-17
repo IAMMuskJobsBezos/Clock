@@ -125,3 +125,45 @@ Everything else in decisions #1–32 stands as written.
 | # | Question | Decision |
 | --- | --- | --- |
 | 40 | Font for numbers | **Digits are set in Roboto, everything else in Poppins** - Emmett's call, made against the Phone app but stated as a general rule ("any number will be in roboto and the others will be the other font"). Scope, when asked how far it reaches: only text that is *nothing but* digits - keypad keys, a typed or displayed phone number, the 911 pill, a call timer. Text that mixes words and digits ("09:56 AM", "Outgoing · 3 Calls") stays wholly Poppins; digits are not picked out mid-string. Weight is matched to the Poppins it replaces rather than dropped to a single weight - the Phone app maps Poppins 600/700/800 to Roboto Medium/Bold/Black, so a number looks exactly as heavy as it did before, just in Roboto's letterforms. Note this differs from the Clock handoff's "always Roboto 500" for time readouts, which stands for Clock. Views with fixed content pick the face off a style; views that only learn at bind time whether they hold a name or a number (a Recents row title, a caller label) choose in code. |
+
+## Contacts: New/Edit Contact screen (2026-08-16, from the Contacts app)
+
+Handoff: `design_handoff_contacts_new_contact` — README plus three per-state
+boards. Where the boards (authored later the same day) disagreed with the
+README, the boards won: avatar initial 57sp/800 (not 40), filled field value
+22sp/700 while the placeholder stays 20sp/600, Save carries a 2dp border of its
+own fill colour so it measures identically to Cancel.
+
+| # | Question | Decision |
+| --- | --- | --- |
+| 41 | Caps field labels vs the 18sp floor | The handoff draws the "FIRST NAME" labels above filled fields at 14px. **The 18sp floor from design-principles.md wins** — Emmett's explicit call. It is the only value in the handoff deliberately not matched, and the reason is the same one the floor exists for. |
+| 42 | Field label capitalisation | **Title Case** — "First Name", "Phone Number", "Zip Code", "Show Optional Fields", "New Contact" — per the boards, overriding the sentence-case rule in design-principles.md § Language. English strings only; other locales keep their Commons translations. |
+| 43 | 911 pill, one shape across the suite | The Contacts pill is sized to **the Phone fork's pill**, not to the contacts board: 20dp/8dp padding, 8dp icon gap, 24dp icon, 22sp label in Roboto Black (decision #40 — digits only). Emmett's call: the emergency affordance must be identical wherever it appears, so Phone is the reference and other apps match it. Contacts keeps the handoff's `#c62828` red; Phone's is `#c1272d` — visually indistinguishable, worth unifying on a later pass. |
+| 44 | 911 asterisk glyph | Rebuilt. The old `ic_emergency_star` was a thin-armed asterisk that read much lighter than the heavy six-armed glyph in the boards. Replaced with three blunt-ended bars crossed at 60°, arms ~4.5× as long as thick, ink filling ~0.7 of the box the way a 24px glyph does. **Applied to every 911 button in the suite** — the drawable is kept identical in Contacts and Phone. |
+| 45 | Press feedback on the optional-fields toggle | The Show/Hide Optional Fields pill takes **no press state at all** — Emmett's explicit call, carving it out of decision #30. It is a disclosure control rather than a solid-fill action button; Cancel/Save/911 keep the press-invert. |
+
+## Contacts + Phone follow-up pass (2026-08-16, same day)
+
+| # | Question | Decision |
+| --- | --- | --- |
+| 46 | One 911 red | **Superseded #43's note.** Both apps now use `#c62828` — the contacts handoff's value — in **both themes**. Phone's `#c1272d` is gone, and so is its dark-mode lift to `#e04a50`: `eb_emergency` has no night variant in either app, because the emergency affordance must be the identical colour everywhere it appears. |
+| 47 | Phone's "+ New Contact" pill | The pill floats **over** the contacts list instead of sitting on an opaque strip of its own, so rows scroll visibly behind it — Emmett's explicit call, and the same treatment decision #27 settled on for Clock's Add City button. `ContactsFragment` pads the list's bottom by the pill's measured footprint so the last contact can still be scrolled clear. |
+| 48 (revises #40) | Titles are always Poppins | **Carve-out from the numerals rule.** A row or screen *title* stays Poppins even when it is a bare number, because a title names the thing rather than reading out a value. Under #40 an unsaved caller's Recents row rendered in Roboto Bold — visibly lighter and narrower than the saved contact directly above it, so one list read as two kinds of row. Emmett: "the title of ANY call/thing should be the same bold and color that a contact gets." Applies to the Recents row title, the Recents detail screen title, and a Contacts row for a contact saved without a name (`applyTitleTypeface*`). Genuine numeric readouts — keypad input, a Phone Number field value, the 911 pill, call timers — still follow #40. |
+| 49 | Recents avatar alignment | Bug fix. The Recents row anchored its title to the **avatar's top** with no vertical chain, while the avatar centred itself in the row — so with two lines of text beside it the avatar sat visibly high, unlike the Contacts row. Title + status are now a packed vertical chain centred in the row, exactly as `item_contact_row` already did. |
+| 50 | Keypad key fill | The digit keys drop their plum tint for a neutral grey (`#e7e7e7`, same lightness as the `#e6e2e9` it replaces; `#3a3a3c` in dark) — Emmett's explicit call. They also get their own neutral pressed colour rather than sharing `eb_soft_fill_pressed`, so a key cannot pick the tint back up on touch. The "Add To Contacts" soft pill keeps its tint; only the keys were in scope. |
+
+## Contacts: focus-to-compose animation (2026-08-16, from FOCUS_ANIMATION.md)
+
+| # | Question | Decision |
+| --- | --- | --- |
+| 51 | Collapse-on-focus | Per the signed-off spec: any field taking focus collapses the avatar + name block (height → 0, opacity → 0, `translateY` → -12dp, padding → 0) over **520 ms** on CSS `ease` (`PathInterpolator(.25,.1,.25,1)`), opacity clearing at 0.8 of that; the Cancel/Save row's vertical padding rises 12dp → 16dp over the same curve; the header title takes over the name, live per keystroke, and returns to "Contacts" at rest even when the contact has one. One `ValueAnimator` drives a single fraction that every value is derived from, so nothing can drift. 130 ms blur grace period stops the flicker when moving between fields. Reduce-motion applies the end state directly. |
+| 52 | Two Android deviations from the spec | (a) The expanded height is **measured**, not the spec's fixed 190px max-height. The CSS constraint behind that number — `auto` is not animatable — does not apply on Android, and a hardcoded 190dp would clip the block at large system font sizes, which this suite cannot afford. (b) The spec's "focus lost" has no direct Android equivalent: a field keeps focus after the keyboard closes, so the block would never come back. **Putting the keyboard away drops focus**, which is how a user signals they are done typing. |
+
+## Suite-wide: the typed line never hides behind the keyboard (2026-08-16)
+
+| # | Question | Decision |
+| --- | --- | --- |
+| 53 | Caret vs keyboard | **Universal rule, every app.** The line being typed always stays a fixed distance (24dp) clear of the keyboard: as a field wraps onto a new line or a box grows, the scroll container follows the caret instead of letting it slide underneath the IME. Emmett's explicit call — scrolling back up by hand every line or two is exactly the fiddly correction this suite exists to remove. Installed with one call per screen, on the scroll container, after its fields exist: `keepTypedLineClearOfKeyboard(keepClearPx)`. It walks the container's `EditText` descendants for caret movement and watches the container itself for resizes. |
+| 54 | Why not `requestRectangleOnScreen` | The platform's own "reveal this area" call looks like the obvious tool and **does not work here**: `ScrollView`/`NestedScrollView` measure their visible area as the full view height and ignore bottom padding, so on an edge-to-edge screen — where the keyboard is drawn *over* the container rather than shrinking it — they decide the caret is already visible and never scroll. The helper instead measures how much of the container the keyboard actually covers (IME inset vs the container's position in the window), which is correct whether the window resizes or the keyboard overlays. Worth remembering before anyone "simplifies" it back. |
+
+**Where it is installed.** Contacts → the new/edit contact editor. Notes → the note editor body. Those are the only two screens in the suite with a text field inside a scrolling container. Messages' compose box is bottom-anchored above the keyboard and grows upward, so it is structurally immune; Phone, Clock, Camera and Gallery have only single-line fields in dialogs, which the framework already lifts clear. Any new scrolling text screen should call the helper.
